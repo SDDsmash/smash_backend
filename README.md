@@ -42,7 +42,7 @@
 
 ## 🏗️ 시스템 아키텍처
 
-![architecture](./architecture.png)
+
 
 ### 🔹 프런트엔드
 - **Vite + React + TypeScript + Tailwind CSS**
@@ -51,6 +51,9 @@
 
 ### 🔹 백엔드
 - **Spring Boot (Java)**
+  - java 17, spring boot 3.5.7 사용
+  - Gradle - Groovy 기반 빌드 시스템
+  - jar 패키징
 - **Docker**로 컨테이너화되어 **AWS EC2**에서 실행
 - API 통합 및 데이터 가공 로직 담당
 - **Redis**를 통한 캐싱 처리
