@@ -28,8 +28,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() //기본 거부 정책 적용
                 );
 
         /**
@@ -60,6 +59,8 @@ public class SecurityConfig {
                                 return config;
                             }
                         }));
+        http
+                .formLogin((formLogin) -> formLogin.disable());
 
         return http.build();
     }
