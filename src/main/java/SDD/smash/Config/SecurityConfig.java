@@ -1,6 +1,7 @@
 package SDD.smash.Config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,12 +12,17 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
+    @Value("${front_url}")
+    private String[] frontUrl;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -28,8 +34,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() //기본 거부 정책 적용
                 );
 
         /**
@@ -49,7 +54,8 @@ public class SecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration config = new CorsConfiguration();
 
-                                config.setAllowedOrigins(singletonList("https://localhost:5173"));
+                                List<String> allowed = Arrays.asList(frontUrl);
+                                config.setAllowedOrigins(allowed);
                                 config.setAllowedMethods(singletonList("*")); // 허용할 메소드 Get ect on
                                 config.setAllowCredentials(true);
                                 config.setAllowedHeaders(singletonList("*"));
@@ -60,6 +66,8 @@ public class SecurityConfig {
                                 return config;
                             }
                         }));
+        http
+                .formLogin((formLogin) -> formLogin.disable());
 
         return http.build();
     }
