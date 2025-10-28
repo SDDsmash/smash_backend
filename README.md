@@ -41,6 +41,7 @@
 ---
 
 ## 🏗️ 시스템 아키텍처
+<img width="8084" height="3168" alt="소개딩_아키텍처" src="https://github.com/user-attachments/assets/0b01cbf0-af6e-4db1-8246-134026ada17f" />
 
 
 
