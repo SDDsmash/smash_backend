@@ -73,7 +73,7 @@ public class JobCodeMiddleBatch {
     @Bean
     public Step jcMiddleStep(){
         return new StepBuilder("jcMiddleStep", jobRepository)
-                .<JobCodeMiddleDTO, JobCodeMiddle> chunk(50, platformTransactionManager)
+                .<JobCodeMiddleDTO, JobCodeMiddle> chunk(100, platformTransactionManager)
                 .reader(jcMiddleCsvReader())
                 .processor(jcMiddleProcessor())
                 .writer(jcMiddleWriter())

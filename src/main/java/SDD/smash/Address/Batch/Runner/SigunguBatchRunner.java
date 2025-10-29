@@ -25,7 +25,7 @@ public class SigunguBatchRunner {
     @EventListener(ApplicationReadyEvent.class)
     public void runSigunguJobAfterStartup() throws Exception{
         if(guard.alreadyDone("SigunguJob",SEED_VERSION)){
-            log.info("SigunguJob already completed for seedVersion = " + SEED_VERSION);
+            log.info("SidoJob has already done");
             return;
         }
 
@@ -35,6 +35,5 @@ public class SigunguBatchRunner {
                         .addString("seedVersion", SEED_VERSION)
                         .toJobParameters()
         );
-        log.info("✅ SigunguBatch Job 실행 완료");
     }
 }

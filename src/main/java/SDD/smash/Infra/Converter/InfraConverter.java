@@ -11,7 +11,7 @@ import static SDD.smash.Util.BatchUtil.clean;
 public class InfraConverter {
     public static JobCodeTop topToEntity(JobCodeTopDTO dto){
         return JobCodeTop.builder()
-                .code(clean(dto.getCode()))
+                .code(addLeadingZero(clean(dto.getCode())))
                 .name(clean(dto.getName()))
                 .build();
     }

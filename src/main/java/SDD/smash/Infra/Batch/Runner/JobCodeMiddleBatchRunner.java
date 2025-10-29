@@ -1,4 +1,4 @@
-package SDD.smash.Address.Batch.Runner;
+package SDD.smash.Infra.Batch.Runner;
 
 import SDD.smash.Util.BatchGuard;
 import lombok.RequiredArgsConstructor;
@@ -8,32 +8,36 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SidoBatchRunner {
+public class JobCodeMiddleBatchRunner {
     private final JobLauncher jobLauncher;
-    private final Job SidoJob;
+    private final Job jcMiddleJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v4";
+    private static final String SEED_VERSION = "v3";
+
     @Async
     @EventListener(ApplicationEvent.class)
-    public void runSidoJobAfterStartup() throws Exception {
-        if(guard.alreadyDone("SidoJob",SEED_VERSION)){
-            log.info("SidoJob already Done");
+    @Order(2)
+    public void runjcToMiddleJobAfterStartup() throws Exception {
+        if(guard.alreadyDone("jcMiddleJob",SEED_VERSION)){
+            log.info("jcMiddleJob already Done");
             return;
         }
 
         jobLauncher.run(
-                SidoJob,
+                jcMiddleJob,
                 new JobParametersBuilder()
                         .addString("seedVersion", SEED_VERSION)
                         .toJobParameters()
         );
 
     }
+
 }
