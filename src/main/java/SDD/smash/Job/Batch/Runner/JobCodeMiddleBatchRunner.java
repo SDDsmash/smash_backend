@@ -1,4 +1,4 @@
-package SDD.smash.Infra.Batch.Runner;
+package SDD.smash.Job.Batch.Runner;
 
 import SDD.smash.Util.BatchGuard;
 import lombok.RequiredArgsConstructor;

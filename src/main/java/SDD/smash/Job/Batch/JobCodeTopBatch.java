@@ -1,12 +1,9 @@
-package SDD.smash.Infra.Batch;
+package SDD.smash.Job.Batch;
 
-import SDD.smash.Address.Converter.AddressConverter;
-import SDD.smash.Address.Dto.SidoDTO;
-import SDD.smash.Address.Entity.Sido;
-import SDD.smash.Infra.Converter.InfraConverter;
-import SDD.smash.Infra.Dto.JobCodeTopDTO;
-import SDD.smash.Infra.Entity.JobCodeTop;
-import SDD.smash.Infra.Repository.JobCodeTopRepository;
+import SDD.smash.Job.Converter.JobConverter;
+import SDD.smash.Job.Dto.JobCodeTopDTO;
+import SDD.smash.Job.Entity.JobCodeTop;
+import SDD.smash.Job.Repository.JobCodeTopRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -84,7 +81,7 @@ public class JobCodeTopBatch {
 
     @Bean
     public ItemProcessor<JobCodeTopDTO, JobCodeTop> jcTopProfessor(){
-        return InfraConverter::topToEntity;
+        return JobConverter::topToEntity;
     }
 
     @Bean

@@ -1,4 +1,4 @@
-    package SDD.smash.Infra.Entity;
+    package SDD.smash.Job.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
