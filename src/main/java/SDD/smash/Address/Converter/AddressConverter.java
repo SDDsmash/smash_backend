@@ -10,14 +10,14 @@ import static SDD.smash.Util.BatchUtil.clean;
 public class AddressConverter {
     public static Sido sidoToEntity(SidoDTO dto){
         return Sido.builder()
-                .name(dto.getName())
+                .name(clean(dto.getName()))
                 .sidoCode(clean(dto.getSido_code()))
                 .build();
     }
 
     public static Sigungu sigunguToEntity(SigunguDTO dto, Sido sido){
         return Sigungu.builder()
-                .name(dto.getName())
+                .name(clean(dto.getName()))
                 .sigunguCode(dto.getSigungu_code())
                 .sido(sido)
                 .build();
