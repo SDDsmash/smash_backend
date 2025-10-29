@@ -3,16 +3,13 @@ package SDD.smash.Job.Entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor @AllArgsConstructor
 public class JobCodeTop {
 
     @Id
