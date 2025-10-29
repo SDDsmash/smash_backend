@@ -104,7 +104,7 @@ public class SigunguBatch {
         return dto -> {
             String sidoCode = dto.getSido_code();
             Sido sido = resolveSido(sidoCode);
-            Sigungu sigungu = AddressConverter.toEntity(dto, sido);
+            Sigungu sigungu = AddressConverter.sigunguToEntity(dto, sido);
             sido.addSigungu(sigungu);
             return sigungu;
         };

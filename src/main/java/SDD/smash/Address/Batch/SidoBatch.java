@@ -81,7 +81,7 @@ public class SidoBatch {
 
     @Bean
     public ItemProcessor<SidoDTO, Sido> sidoCsvProfessor(){
-        return AddressConverter::toEntity;
+        return AddressConverter::sidoToEntity;
     }
 
     @Bean
