@@ -1,4 +1,4 @@
-package SDD.smash.Infra.Entity;
+package SDD.smash.Dwelling.Entity;
 
 import SDD.smash.Address.Entity.Sigungu;
 import jakarta.persistence.*;
@@ -10,7 +10,7 @@ import lombok.*;
 @Getter @Setter
 @Builder
 @NoArgsConstructor @AllArgsConstructor
-public class IndustryScore {
+public class DwellingScore {
     @Id
     @Column(name = "sigungu_code", length = 5)
     private String sigunguCode;
