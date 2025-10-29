@@ -38,7 +38,7 @@ public class JobCodeTopBatch {
         this.jobCodeTopRepository = jobCodeTopRepository;
     }
 
-    @Value("jobCodeTop.filePath")
+    @Value("${jobCodeTop.filePath}")
     private String filePath;
 
     @Bean
