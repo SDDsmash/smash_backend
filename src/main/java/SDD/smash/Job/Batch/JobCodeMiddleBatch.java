@@ -1,12 +1,12 @@
-package SDD.smash.Infra.Batch;
+package SDD.smash.Job.Batch;
 
 
-import SDD.smash.Infra.Converter.InfraConverter;
-import SDD.smash.Infra.Dto.JobCodeMiddleDTO;
-import SDD.smash.Infra.Entity.JobCodeMiddle;
-import SDD.smash.Infra.Entity.JobCodeTop;
-import SDD.smash.Infra.Repository.JobCodeMiddleRepository;
-import SDD.smash.Infra.Repository.JobCodeTopRepository;
+import SDD.smash.Job.Converter.JobConverter;
+import SDD.smash.Job.Dto.JobCodeMiddleDTO;
+import SDD.smash.Job.Entity.JobCodeMiddle;
+import SDD.smash.Job.Entity.JobCodeTop;
+import SDD.smash.Job.Repository.JobCodeMiddleRepository;
+import SDD.smash.Job.Repository.JobCodeTopRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -115,7 +115,7 @@ public class JobCodeMiddleBatch {
             if (jct == null) {
                 throw new IllegalArgumentException("Invalid jobCodeTop: " + jobCodeTop);
             }
-            return InfraConverter.middleToEntity(dto,jct);
+            return JobConverter.middleToEntity(dto,jct);
         };
     }
 

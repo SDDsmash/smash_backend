@@ -1,11 +1,13 @@
-package SDD.smash.Infra.Dto;
+package SDD.smash.Job.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class JobCodeTopDTO {
+@Getter
+public class JobCodeMiddleDTO {
+
     private String code;
     private String name;
+    private String upstream;
 }
