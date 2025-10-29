@@ -1,4 +1,4 @@
-package com.example.demo.SDD.Dto;
+package SDD.smash.Infra.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
