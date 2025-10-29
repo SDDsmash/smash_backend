@@ -27,6 +27,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.HashMap;
 import java.util.Map;
 
+import static SDD.smash.Util.BatchUtil.addLeadingZero;
+import static SDD.smash.Util.BatchUtil.clean;
+
 
 @Configuration
 public class SigunguBatch {
@@ -92,8 +95,8 @@ public class SigunguBatch {
                 .fieldSetMapper(fieldSet -> {
                     SigunguDTO dto = new SigunguDTO();
                     dto.setSigungu_code(fieldSet.readString(0).trim());
+                    dto.setSido_code(fieldSet.readString(1).trim());
                     dto.setName(fieldSet.readString(2).trim());
-                    dto.setName(fieldSet.readString(1).trim());
                     return dto;
                 })
                 .build();
@@ -102,11 +105,12 @@ public class SigunguBatch {
     @Bean
     public ItemProcessor<SigunguDTO, Sigungu> sigungoCsvProfessor(){
         return dto -> {
-            String sidoCode = dto.getSido_code();
+            String sidoCode = addLeadingZero(clean(dto.getSido_code()));
             Sido sido = resolveSido(sidoCode);
-            Sigungu sigungu = AddressConverter.sigunguToEntity(dto, sido);
-            sido.addSigungu(sigungu);
-            return sigungu;
+            if (sido == null){
+                throw new IllegalAccessException("Ivalid SidoCode: " + sidoCode);
+            }
+            return AddressConverter.sigunguToEntity(dto, sido);
         };
     }
 

@@ -19,7 +19,7 @@ public class SidoBatchRunner {
     private final Job SidoJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v1";
+    private static final String SEED_VERSION = "v4";
 
     @Async
     @EventListener(ApplicationEvent.class)

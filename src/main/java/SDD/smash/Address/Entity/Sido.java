@@ -17,7 +17,7 @@ import java.util.List;
 public class Sido {
 
     @Id
-    @Column(length = 2)
+    @Column(name = "sido_code", length = 2)
     private String sidoCode;
 
     @Column(nullable = false)
@@ -26,8 +26,4 @@ public class Sido {
 
     @OneToMany(mappedBy = "sido", fetch = FetchType.LAZY)
     private List<Sigungu> sigunguList;
-
-    public void addSigungu(Sigungu sigungu) {
-        this.sigunguList.add(sigungu);
-    }
 }

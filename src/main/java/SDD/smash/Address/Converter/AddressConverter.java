@@ -18,7 +18,7 @@ public class AddressConverter {
     public static Sigungu sigunguToEntity(SigunguDTO dto, Sido sido){
         return Sigungu.builder()
                 .name(clean(dto.getName()))
-                .sigunguCode(dto.getSigungu_code())
+                .sigunguCode(clean(dto.getSigungu_code()))
                 .sido(sido)
                 .build();
 
