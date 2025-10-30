@@ -27,8 +27,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import static SDD.smash.Util.BatchUtil.addLeadingZero;
-import static SDD.smash.Util.BatchUtil.clean;
+import static SDD.smash.Util.BatchTextUtil.addLeadingZero;
+import static SDD.smash.Util.BatchTextUtil.normalize;
 
 
 @Configuration
@@ -110,7 +110,7 @@ public class JobCodeMiddleBatch {
     @Bean
     public ItemProcessor<JobCodeMiddleDTO, JobCodeMiddle> jcMiddleProcessor(){
         return dto -> {
-            String jobCodeTop = addLeadingZero(clean(dto.getUpstream()));
+            String jobCodeTop = addLeadingZero(normalize(dto.getUpstream()));
             JobCodeTop jct = resolveSido(jobCodeTop);
             if (jct == null) {
                 throw new IllegalArgumentException("Invalid jobCodeTop: " + jobCodeTop);

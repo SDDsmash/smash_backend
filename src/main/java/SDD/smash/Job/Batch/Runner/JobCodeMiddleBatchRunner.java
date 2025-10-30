@@ -20,11 +20,11 @@ public class JobCodeMiddleBatchRunner {
     private final Job jcMiddleJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v3";
+    private static final String SEED_VERSION = "v6";
 
     @Async
     @EventListener(ApplicationEvent.class)
-    @Order(2)
+    @Order(4)
     public void runjcToMiddleJobAfterStartup() throws Exception {
         if(guard.alreadyDone("jcMiddleJob",SEED_VERSION)){
             log.info("jcMiddleJob already Done");

@@ -8,6 +8,7 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,9 @@ public class SidoBatchRunner {
     private final Job SidoJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v4";
+    private static final String SEED_VERSION = "v7";
+
+    @Order(1)
     @Async
     @EventListener(ApplicationEvent.class)
     public void runSidoJobAfterStartup() throws Exception {

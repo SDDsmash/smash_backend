@@ -1,7 +1,6 @@
 package SDD.smash.Address.Batch;
 
 import SDD.smash.Address.Converter.AddressConverter;
-import SDD.smash.Address.Dto.SidoDTO;
 import SDD.smash.Address.Dto.SigunguDTO;
 import SDD.smash.Address.Entity.Sido;
 import SDD.smash.Address.Entity.Sigungu;
@@ -27,8 +26,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import static SDD.smash.Util.BatchUtil.addLeadingZero;
-import static SDD.smash.Util.BatchUtil.clean;
+import static SDD.smash.Util.BatchTextUtil.*;
 
 
 @Configuration
@@ -105,7 +103,7 @@ public class SigunguBatch {
     @Bean
     public ItemProcessor<SigunguDTO, Sigungu> sigungoCsvProfessor(){
         return dto -> {
-            String sidoCode = addLeadingZero(clean(dto.getSido_code()));
+            String sidoCode = addLeadingZero(normalize(dto.getSido_code()));
             Sido sido = resolveSido(sidoCode);
             if (sido == null){
                 throw new IllegalAccessException("Ivalid SidoCode: " + sidoCode);
