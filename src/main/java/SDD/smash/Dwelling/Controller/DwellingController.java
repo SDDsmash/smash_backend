@@ -22,8 +22,7 @@ public class DwellingController {
             @RequestParam String dealYmd,
             @RequestParam(defaultValue = "1") int months
             ) throws IllegalAccessException {
-        Dwelling dwelling = dwellingStatesService.getStats(lawdCd, dealYmd, months);
-        ResponseDTO responseDTO = dwellingStatesService.dwellingSave(dwelling);
+        ResponseDTO responseDTO = dwellingStatesService.getStatsAndSave(lawdCd, dealYmd, months);
         return ResponseEntity.ok(responseDTO);
     }
 }
