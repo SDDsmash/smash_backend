@@ -48,7 +48,7 @@ public class IndustryBatch {
     public Step industryStep() {
 
         return new StepBuilder("industryStep", jobRepository)
-                .<IndustryDTO, Industry> chunk(10, platformTransactionManager)
+                .<IndustryDTO, Industry> chunk(20, platformTransactionManager)
                 .reader(industryCsvReader())
                 .processor(industryCsvProfessor())
                 .writer(industryWriter())
@@ -62,7 +62,7 @@ public class IndustryBatch {
         return new FlatFileItemReaderBuilder<IndustryDTO>()
                 .name("industryCsvReader")
                 .resource(new FileSystemResource(filePath))
-                .encoding("MS949")
+                .encoding("UTF-8")
                 .linesToSkip(1)
                 .strict(true)
                 .delimited()
