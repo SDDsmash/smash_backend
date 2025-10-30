@@ -1,8 +1,8 @@
 package SDD.smash.Dwelling.Controller;
 
 import SDD.smash.Dwelling.Dto.ResponseDTO;
-import SDD.smash.Dwelling.Entity.Dwelling;
 import SDD.smash.Dwelling.Service.DwellingStatesService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +16,7 @@ public class DwellingController {
         this.dwellingStatesService = dwellingStatesService;
     }
 
-    @PostMapping(value = "/molit")
+    @PostMapping(value = "/molit",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> getAptRentStats(
             @RequestParam String lawdCd,
             @RequestParam String dealYmd,

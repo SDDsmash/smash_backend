@@ -32,12 +32,13 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated() //기본 거부 정책 적용
-                );
+//        http
+//                .authorizeHttpRequests((auth) -> auth
+//                        .requestMatchers("/api/**").permitAll()
+//                        .anyRequest().authenticated() //기본 거부 정책 적용
+//                );
 
+        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         /**
          * csrf 보호 해제
          * */
