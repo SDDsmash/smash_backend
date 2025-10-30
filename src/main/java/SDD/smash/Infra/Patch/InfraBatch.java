@@ -1,16 +1,13 @@
 package SDD.smash.Infra.Patch;
 
-import SDD.smash.Address.Dto.PopulationDTO;
-import SDD.smash.Address.Entity.Population;
+
 import SDD.smash.Address.Entity.Sigungu;
-import SDD.smash.Address.Repository.PopulationRepository;
 import SDD.smash.Address.Repository.SigunguRepository;
 import SDD.smash.Infra.Dto.InfraDTO;
 import SDD.smash.Infra.Entity.Industry;
 import SDD.smash.Infra.Entity.Infra;
 import SDD.smash.Infra.Repository.IndustryRepository;
 import SDD.smash.Infra.Repository.InfraRepository;
-import SDD.smash.Util.BatchTextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -32,8 +29,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import static SDD.smash.Address.Converter.AddressConverter.populationToEntity;
-import static SDD.smash.Infra.Converter.InfraConverter.industryToEntity;
 import static SDD.smash.Infra.Converter.InfraConverter.infraToEntity;
 import static SDD.smash.Util.BatchTextUtil.*;
 
@@ -102,7 +97,7 @@ public class InfraBatch {
     public Step infraStep() {
 
         return new StepBuilder("infraStep", jobRepository)
-                .<InfraDTO, Infra> chunk(300, platformTransactionManager)
+                .<InfraDTO, Infra> chunk(500, platformTransactionManager)
                 .reader(infraCsvReader())
                 .processor(infraCsvProfessor())
                 .writer(infraWriter())
