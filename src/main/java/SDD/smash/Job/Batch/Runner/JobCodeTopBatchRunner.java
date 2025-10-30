@@ -20,7 +20,7 @@ public class JobCodeTopBatchRunner {
     private final Job jcTopJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v6";
+    private static final String SEED_VERSION = "v1";
 
     @Async
     @EventListener(ApplicationEvent.class)

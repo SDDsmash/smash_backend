@@ -1,4 +1,4 @@
-package SDD.smash.Job.Batch.Runner;
+package SDD.smash.Infra.Patch.Runner;
 
 import SDD.smash.Util.BatchGuard;
 import lombok.RequiredArgsConstructor;
@@ -15,29 +15,28 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JobCodeMiddleBatchRunner {
+public class InfraBatchRunner {
     private final JobLauncher jobLauncher;
-    private final Job jcMiddleJob;
+    private final Job infraJob;
     private final BatchGuard guard;
 
     private static final String SEED_VERSION = "v1";
 
+    @Order(7)
     @Async
     @EventListener(ApplicationEvent.class)
-    @Order(4)
-    public void runjcToMiddleJobAfterStartup() throws Exception {
-        if(guard.alreadyDone("jcMiddleJob",SEED_VERSION)){
-            log.info("jcMiddleJob already Done");
+    public void runInfraAfterStartup() throws Exception {
+        if(guard.alreadyDone("infraJob",SEED_VERSION)){
+            log.info("infraJob already Done");
             return;
         }
 
         jobLauncher.run(
-                jcMiddleJob,
+                infraJob,
                 new JobParametersBuilder()
                         .addString("seedVersion", SEED_VERSION)
                         .toJobParameters()
         );
 
     }
-
 }

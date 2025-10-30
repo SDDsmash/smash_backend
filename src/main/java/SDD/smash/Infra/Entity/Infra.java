@@ -29,7 +29,6 @@ public class Infra {
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(
             name = "sigungu_code",
-            unique = true,
             foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
     )
     private Sigungu sigungu;
@@ -37,7 +36,6 @@ public class Infra {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
             name = "industry_code",
-            unique = true,
             foreignKey = @ForeignKey(ConstraintMode.CONSTRAINT)
     )
     private Industry industry;

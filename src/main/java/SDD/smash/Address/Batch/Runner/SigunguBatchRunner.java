@@ -20,7 +20,7 @@ public class SigunguBatchRunner {
     private final Job SigunguJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v7";
+    private static final String SEED_VERSION = "v1";
 
     @Order(2)
     @Async
