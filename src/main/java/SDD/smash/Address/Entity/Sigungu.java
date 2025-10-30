@@ -6,8 +6,7 @@ import lombok.*;
 
 @Entity
 @Builder
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class Sigungu {
 

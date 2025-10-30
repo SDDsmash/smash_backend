@@ -11,12 +11,11 @@ import lombok.*;
 public class Population {
 
     @Id
-    @Column(name = "sigungu_code", length = 5)
-    private String sigunguCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "sigungu_code")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sigungu_code", nullable = false, unique = true)
     private Sigungu sigungu;
 
     @Column(name = "population_count")

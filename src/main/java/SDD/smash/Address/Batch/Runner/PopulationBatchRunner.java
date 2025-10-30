@@ -1,4 +1,4 @@
-package SDD.smash.Job.Batch.Runner;
+package SDD.smash.Address.Batch.Runner;
 
 import SDD.smash.Util.BatchGuard;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.context.ApplicationEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
@@ -15,29 +15,27 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class JobCodeTopBatchRunner {
+public class PopulationBatchRunner {
     private final JobLauncher jobLauncher;
-    private final Job jcTopJob;
+    private final Job PopulationJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v6";
+    private static final String SEED_VERSION = "v2";
 
+    @Order(5)
     @Async
-    @EventListener(ApplicationEvent.class)
-    @Order(3)
-    public void runjcTopJobAfterStartup() throws Exception {
-        if(guard.alreadyDone("jcTopJob",SEED_VERSION)){
-            log.info("jcTopJob already Done");
+    @EventListener(ApplicationReadyEvent.class)
+    public void runPopulationJobAfterStartup() throws Exception{
+        if(guard.alreadyDone("PopulationJob",SEED_VERSION)){
+            log.info("PopulationJob has already done");
             return;
         }
 
         jobLauncher.run(
-                jcTopJob,
+                PopulationJob,
                 new JobParametersBuilder()
                         .addString("seedVersion", SEED_VERSION)
                         .toJobParameters()
         );
-
     }
-
 }
