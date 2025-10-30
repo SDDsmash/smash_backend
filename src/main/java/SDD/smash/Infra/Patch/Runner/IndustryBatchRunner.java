@@ -1,0 +1,42 @@
+package SDD.smash.Infra.Patch.Runner;
+
+import SDD.smash.Util.BatchGuard;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class IndustryBatchRunner {
+    private final JobLauncher jobLauncher;
+    private final Job industryJob;
+    private final BatchGuard guard;
+
+    private static final String SEED_VERSION = "v2";
+
+    @Order(6)
+    @Async
+    @EventListener(ApplicationEvent.class)
+    public void runSidoJobAfterStartup() throws Exception {
+        if(guard.alreadyDone("industryJob",SEED_VERSION)){
+            log.info("industryJob already Done");
+            return;
+        }
+
+        jobLauncher.run(
+                industryJob,
+                new JobParametersBuilder()
+                        .addString("seedVersion", SEED_VERSION)
+                        .toJobParameters()
+        );
+
+    }
+}
