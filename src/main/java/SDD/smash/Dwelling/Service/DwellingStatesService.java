@@ -33,8 +33,8 @@ public class DwellingStatesService {
         this.dwellingRepository = dwellingRepository;
     }
 
-    @Transactional
-    public ResponseDTO getStats(String sigunguCode, String dealYmd, int months) throws IllegalAccessException {
+
+    public Dwelling getStats(String sigunguCode, String dealYmd, int months) throws IllegalAccessException {
         YearMonth to = YearMonth.parse(dealYmd, DateTimeFormatter.ofPattern("yyyyMM"));
         YearMonth from = to.minusMonths(months - 1);
 
@@ -54,16 +54,19 @@ public class DwellingStatesService {
         }
         DwellingDTO dto = toDTO(monthValues, jeonseValues, sigunguCode);
 
-        Dwelling dwelling = toEntity(dto, sigunguRepository);
+        return toEntity(dto, sigunguRepository);
+    }
+
+    @Transactional
+    public ResponseDTO dwellingSave(Dwelling dwelling) throws IllegalAccessException {
         try{
             dwellingRepository.save(dwelling);
-        } catch (Exception e) {
-            throw new IllegalAccessException("저장하지 못했습니다." + e);
+        } catch (Exception e){
+            throw new IllegalAccessException("저장이 안됨" + e.getMessage());
         }
 
         return new ResponseDTO(true);
     }
-
 
     private static List<Integer> getMonths(List<RentRecord> arrayList) {
         List<Integer> months = new ArrayList<>();
