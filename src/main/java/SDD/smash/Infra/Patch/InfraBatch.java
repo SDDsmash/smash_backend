@@ -1,10 +1,15 @@
-package SDD.smash.Address.Batch;
+package SDD.smash.Infra.Patch;
 
 import SDD.smash.Address.Dto.PopulationDTO;
 import SDD.smash.Address.Entity.Population;
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.PopulationRepository;
 import SDD.smash.Address.Repository.SigunguRepository;
+import SDD.smash.Infra.Dto.InfraDTO;
+import SDD.smash.Infra.Entity.Industry;
+import SDD.smash.Infra.Entity.Infra;
+import SDD.smash.Infra.Repository.IndustryRepository;
+import SDD.smash.Infra.Repository.InfraRepository;
 import SDD.smash.Util.BatchTextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -27,26 +32,31 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.HashMap;
 import java.util.Map;
 
-import static SDD.smash.Address.Converter.AddressConverter.*;
+import static SDD.smash.Address.Converter.AddressConverter.populationToEntity;
+import static SDD.smash.Infra.Converter.InfraConverter.industryToEntity;
+import static SDD.smash.Infra.Converter.InfraConverter.infraToEntity;
 import static SDD.smash.Util.BatchTextUtil.*;
 
 
 @Configuration
 @Slf4j
-public class PopulationBatch {
+public class InfraBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
-    private final PopulationRepository populationRepository;
+    private final IndustryRepository industryRepository;
+    private final InfraRepository infraRepository;
     private final SigunguRepository sigunguRepository;
 
-    public PopulationBatch(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager, PopulationRepository populationRepository, SigunguRepository sigunguRepository) {
+    public InfraBatch(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager, IndustryRepository industryRepository, InfraRepository infraRepository, SigunguRepository sigunguRepository) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
-        this.populationRepository = populationRepository;
+        this.industryRepository = industryRepository;
+        this.infraRepository = infraRepository;
         this.sigunguRepository = sigunguRepository;
     }
 
     private Map<String, Sigungu> sigunguCache  = null;
+    private Map<String, Industry> industryCache = null;
 
     private Sigungu resolveSigungu(String sigunguCode) {
         if (sigunguCache == null) {
@@ -57,40 +67,54 @@ public class PopulationBatch {
         }
         Sigungu sigungu = sigunguCache.get(sigunguCode);
         if (sigungu == null) {
-            log.warn("❗ Unknown sigungu code: {}", sigunguCode);
             return null; // 혹은 예외 throw
         }
-        String sigunguCodeTest = sigungu.getSigunguCode();
+
         return sigunguCache.get(sigunguCode);
     }
 
-    @Value("${population.filePath}")
+    private Industry resolveIndustry(String industryCode) {
+        if (industryCache == null) {
+            industryCache = new HashMap<>();
+            for (Industry industry : industryRepository.findAll()) {
+                industryCache.put(industry.getCode(), industry);
+            }
+        }
+        Industry industry = industryCache.get(industryCode);
+        if (industry == null) {
+            log.warn("❗ Unknown industry code: {}", industryCode);
+            return null; // 혹은 예외 throw
+        }
+        return industryCache.get(industryCode);
+    }
+
+    @Value("${infra.filePath}")
     private String filePath;
 
     @Bean
-    public Job PopulationJob(){
-        return new JobBuilder("PopulationJob", jobRepository)
-                .start(populationStep())
+    public Job infraJob(){
+        return new JobBuilder("infraJob", jobRepository)
+                .start(infraStep())
                 .build();
     }
 
     @Bean
-    public Step populationStep() {
+    public Step infraStep() {
 
-        return new StepBuilder("populationStep", jobRepository)
-                .<PopulationDTO, Population> chunk(100, platformTransactionManager)
-                .reader(populationCsvReader())
-                .processor(populationCsvProfessor())
-                .writer(populationWriter())
+        return new StepBuilder("infraStep", jobRepository)
+                .<InfraDTO, Infra> chunk(300, platformTransactionManager)
+                .reader(infraCsvReader())
+                .processor(infraCsvProfessor())
+                .writer(infraWriter())
                 .build();
     }
 
     @Bean
     @StepScope
-    public FlatFileItemReader<PopulationDTO> populationCsvReader() {
+    public FlatFileItemReader<InfraDTO> infraCsvReader() {
 
-        return new FlatFileItemReaderBuilder<PopulationDTO>()
-                .name("populationCsvReader")
+        return new FlatFileItemReaderBuilder<InfraDTO>()
+                .name("infraCsvReader")
                 .resource(new FileSystemResource(filePath))
                 .encoding("MS949")
                 .linesToSkip(1)
@@ -98,34 +122,40 @@ public class PopulationBatch {
                 .delimited()
                 .delimiter(",")
                 .quoteCharacter('\0')
-                .names("sigungu_code", "population")
+                .names("sigungu_code", "opnSvcId","num")
                 .fieldSetMapper(fieldSet -> {
-                    String sigunguCode = normalize(fieldSet.readString(0));
-                    String pop = digitsOnly(fieldSet.readString(1));
+                    String rawSigunguCode = normalize(fieldSet.readString(0));
+                    String rawIndustryCode = normalize(fieldSet.readString(1));
+                    String rawInfraName = normalize(fieldSet.readString(2));
 
-                    return new PopulationDTO(sigunguCode,pop);
+                    return new InfraDTO(rawSigunguCode, rawIndustryCode, rawInfraName);
                 })
                 .build();
     }
 
     @Bean
-    public ItemProcessor<PopulationDTO, Population> populationCsvProfessor(){
+    public ItemProcessor<InfraDTO, Infra> infraCsvProfessor(){
         return dto -> {
             String sigunguKey = dto.getSigungu_code();
-            if (BatchTextUtil.isBlank(sigunguKey)) {
+            String industryCode = dto.getOpenSvcId();
+            if (isBlank(sigunguKey)) {
                 log.warn("❗ Empty sigungu key. Skip row.");
                 return null; // 스킵
+            } else if (isBlank(industryCode)) {
+                log.warn("❗ Empty industry key. Skip row.");
+                return null;
             }
             Sigungu sigungu = resolveSigungu(sigunguKey);
+            Industry industry = resolveIndustry(industryCode);
 
-            return populationToEntity(dto, sigungu);
+            return infraToEntity(dto, sigungu,industry);
         };
     }
     @Bean
-    public RepositoryItemWriter<Population> populationWriter() {
+    public RepositoryItemWriter<Infra> infraWriter() {
 
-        return new RepositoryItemWriterBuilder<Population>()
-                .repository(populationRepository)
+        return new RepositoryItemWriterBuilder<Infra>()
+                .repository(infraRepository)
                 .methodName("save")
                 .build();
     }

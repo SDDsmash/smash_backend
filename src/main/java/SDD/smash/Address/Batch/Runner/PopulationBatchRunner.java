@@ -20,7 +20,7 @@ public class PopulationBatchRunner {
     private final Job PopulationJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v2";
+    private static final String SEED_VERSION = "v1";
 
     @Order(5)
     @Async

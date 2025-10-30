@@ -20,12 +20,12 @@ public class IndustryBatchRunner {
     private final Job industryJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v2";
+    private static final String SEED_VERSION = "v1";
 
     @Order(6)
     @Async
     @EventListener(ApplicationEvent.class)
-    public void runSidoJobAfterStartup() throws Exception {
+    public void runIndustryJobAfterStartup() throws Exception {
         if(guard.alreadyDone("industryJob",SEED_VERSION)){
             log.info("industryJob already Done");
             return;

@@ -20,7 +20,7 @@ public class SidoBatchRunner {
     private final Job SidoJob;
     private final BatchGuard guard;
 
-    private static final String SEED_VERSION = "v7";
+    private static final String SEED_VERSION = "v1";
 
     @Order(1)
     @Async
