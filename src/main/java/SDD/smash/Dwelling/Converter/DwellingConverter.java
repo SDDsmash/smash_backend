@@ -25,18 +25,4 @@ public class DwellingConverter {
                 .build();
     }
 
-    public static Dwelling toEntity(DwellingDTO dto,SigunguRepository sigunguRepository) throws IllegalAccessException {
-        String sigunguCode = dto.getSigunguCode();
-        Sigungu sigungu = sigunguRepository.findBySigunguCode(sigunguCode);
-        if(sigungu == null){
-            throw new IllegalAccessException("존재하지 않는 시군구 코드 : " + sigunguCode);
-        }
-        return Dwelling.builder()
-                .sigungu(sigungu)
-                .monthAvg(dto.getMonthAvg())
-                .monthMid(dto.getMonthMid())
-                .jeonseAvg(dto.getJeonseAvg())
-                .jeonseMid(dto.getJeonseMid())
-                .build();
-    }
 }

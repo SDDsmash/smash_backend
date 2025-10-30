@@ -1,5 +1,6 @@
 package SDD.smash.Dwelling.Service;
 
+import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SigunguRepository;
 import SDD.smash.Dwelling.Adapter.MolitAptRentAdapter;
 import SDD.smash.Dwelling.Converter.DwellingConverter;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static SDD.smash.Dwelling.Converter.DwellingConverter.toDTO;
-import static SDD.smash.Dwelling.Converter.DwellingConverter.toEntity;
 
 @Service
 @Slf4j
@@ -33,8 +33,8 @@ public class DwellingStatesService {
         this.dwellingRepository = dwellingRepository;
     }
 
-
-    public Dwelling getStats(String sigunguCode, String dealYmd, int months) throws IllegalAccessException {
+    @Transactional
+    public ResponseDTO getStatsAndSave(String sigunguCode, String dealYmd, int months) throws IllegalAccessException {
         YearMonth to = YearMonth.parse(dealYmd, DateTimeFormatter.ofPattern("yyyyMM"));
         YearMonth from = to.minusMonths(months - 1);
 
@@ -45,7 +45,6 @@ public class DwellingStatesService {
             if(records.isEmpty()){
                 log.warn("YM={} records: size=0", ym);
             }
-            log.info("YM={} records: size={}, first={}", ym, records.size(), records.get(0));
         }
         List<Integer> monthValues = getMonths(arrayList);
         List<Integer> jeonseValues = getJeonse(arrayList);
@@ -54,19 +53,29 @@ public class DwellingStatesService {
         }
         DwellingDTO dto = toDTO(monthValues, jeonseValues, sigunguCode);
 
-        return toEntity(dto, sigunguRepository);
+        Dwelling dwelling = getDwelling(sigunguCode, dto);
+
+        dwellingRepository.save(dwelling);
+        return new ResponseDTO(true, "성공적으로 저장됐습니다.");
     }
 
-    @Transactional
-    public ResponseDTO dwellingSave(Dwelling dwelling) throws IllegalAccessException {
-        try{
-            dwellingRepository.save(dwelling);
-        } catch (Exception e){
-            throw new IllegalAccessException("저장이 안됨" + e.getMessage());
-        }
+    private Dwelling getDwelling(String sigunguCode, DwellingDTO dto) {
+        Sigungu sigungu = sigunguRepository.getReferenceById(sigunguCode);
 
-        return new ResponseDTO(true);
+        Dwelling dwelling = dwellingRepository.findBySigungu_SigunguCode(sigunguCode)
+                .orElseGet(() -> {
+                    Dwelling d = new Dwelling(); // id=null → 새 엔티티
+                    d.setSigungu(sigungu);
+                    return d;
+                });
+
+        dwelling.setMonthAvg(dto.getMonthAvg());
+        dwelling.setMonthMid(dto.getMonthMid());
+        dwelling.setJeonseAvg(dto.getJeonseAvg());
+        dwelling.setJeonseMid(dto.getJeonseMid());
+        return dwelling;
     }
+
 
     private static List<Integer> getMonths(List<RentRecord> arrayList) {
         List<Integer> months = new ArrayList<>();
