@@ -9,6 +9,10 @@ import lombok.*;
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class Dwelling {
+
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private long id;
     @Id
     @Column(name = "sigungu_code", length = 5)
     private String sigunguCode;
