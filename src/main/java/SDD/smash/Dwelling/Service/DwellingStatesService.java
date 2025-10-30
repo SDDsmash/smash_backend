@@ -5,7 +5,10 @@ import SDD.smash.Dwelling.Adapter.MolitAptRentAdapter;
 import SDD.smash.Dwelling.Converter.DwellingConverter;
 import SDD.smash.Dwelling.Dto.DwellingDTO;
 import SDD.smash.Dwelling.Dto.RentRecord;
+import SDD.smash.Dwelling.Dto.ResponseDTO;
 import SDD.smash.Dwelling.Entity.Dwelling;
+import SDD.smash.Dwelling.Repository.DwellingRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +17,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static SDD.smash.Dwelling.Converter.DwellingConverter.toDTO;
+import static SDD.smash.Dwelling.Converter.DwellingConverter.toEntity;
+
 @Service
 @Slf4j
 public class DwellingStatesService {
     private final MolitAptRentAdapter adapter;
     private final SigunguRepository sigunguRepository;
+    private final DwellingRepository dwellingRepository;
 
-    public DwellingStatesService(MolitAptRentAdapter adapter, SigunguRepository sigunguRepository) {
+    public DwellingStatesService(MolitAptRentAdapter adapter, SigunguRepository sigunguRepository, DwellingRepository dwellingRepository) {
         this.adapter = adapter;
         this.sigunguRepository = sigunguRepository;
+        this.dwellingRepository = dwellingRepository;
     }
 
-    public Dwelling getStats(String sigunguCode, String dealYmd, int months){
+    @Transactional
+    public ResponseDTO getStats(String sigunguCode, String dealYmd, int months) throws IllegalAccessException {
         YearMonth to = YearMonth.parse(dealYmd, DateTimeFormatter.ofPattern("yyyyMM"));
         YearMonth from = to.minusMonths(months - 1);
 
@@ -40,9 +49,19 @@ public class DwellingStatesService {
         }
         List<Integer> monthValues = getMonths(arrayList);
         List<Integer> jeonseValues = getJeonse(arrayList);
-        DwellingDTO dto = DwellingConverter.toDTO(monthValues, jeonseValues, sigunguCode);
+        if(monthValues.isEmpty() && jeonseValues.isEmpty()){
+            log.warn("No rent data to aggregate for sigunguCode={}", sigunguCode);
+        }
+        DwellingDTO dto = toDTO(monthValues, jeonseValues, sigunguCode);
 
-        return DwellingConverter.toEntity(dto,sigunguRepository);
+        Dwelling dwelling = toEntity(dto, sigunguRepository);
+        try{
+            dwellingRepository.save(dwelling);
+        } catch (Exception e) {
+            throw new IllegalAccessException("저장하지 못했습니다." + e);
+        }
+
+        return new ResponseDTO(true);
     }
 
 
