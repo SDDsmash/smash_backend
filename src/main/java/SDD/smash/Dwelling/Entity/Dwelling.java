@@ -19,12 +19,12 @@ public class Dwelling {
     private Sigungu sigungu;
 
     @Column(name = "month_avg")
-    private Integer monthAvg;
+    private Double monthAvg;
     @Column(name = "month_mid")
     private Integer monthMid;
 
     @Column(name = "jeonse_avg")
-    private Integer jeonseAvg;
+    private Double jeonseAvg;
     @Column(name = "jeonse_mid")
     private Integer jeonseMid;
 
