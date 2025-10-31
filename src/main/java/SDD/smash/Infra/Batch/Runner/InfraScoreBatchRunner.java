@@ -14,33 +14,33 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class IndustryBatchRunner {
+public class InfraScoreBatchRunner {
     private final JobLauncher jobLauncher;
-    private final Job industryJob;
+    private final Job infraScoreJob;
     private final BatchGuard guard;
     private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
-    public IndustryBatchRunner(JobLauncher jobLauncher, @Qualifier("industryJob") Job industryJob,
-                               BatchGuard guard, SeedProperties seedProperties) {
+    public InfraScoreBatchRunner(JobLauncher jobLauncher, @Qualifier("infraScoreJob") Job infraScoreJob,
+                                 BatchGuard guard, SeedProperties seedProperties) {
         this.jobLauncher = jobLauncher;
-        this.industryJob = industryJob;
+        this.infraScoreJob = infraScoreJob;
         this.guard = guard;
         this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 
-    @Order(6)
+    @Order(8)
     @EventListener(ApplicationReadyEvent.class)
-    public void runIndustryJobAfterStartup() throws Exception {
-        if(guard.alreadyDone("industryJob",SEED_VERSION)){
-            log.info("Already industryJob : " + SEED_VERSION );
+    public void runInfraAfterStartup() throws Exception {
+        if(guard.alreadyDone("infraScoreJob",SEED_VERSION)){
+            log.info("Already infraScoreJob : " + SEED_VERSION );
             return;
         }
 
         jobLauncher.run(
-                industryJob,
+                infraScoreJob,
                 new JobParametersBuilder()
                         .addString("seedVersion", SEED_VERSION)
                         .toJobParameters()
