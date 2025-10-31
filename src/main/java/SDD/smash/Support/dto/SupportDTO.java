@@ -1,6 +1,5 @@
 package SDD.smash.Support.dto;
 
-import SDD.smash.Support.domain.SupportTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
