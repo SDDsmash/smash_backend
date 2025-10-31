@@ -50,7 +50,7 @@ public class IndustryBatch {
         return new StepBuilder("industryStep", jobRepository)
                 .<IndustryDTO, Industry> chunk(20, platformTransactionManager)
                 .reader(industryCsvReader())
-                .processor(industryCsvProfessor())
+                .processor(industryCsvProcessor())
                 .writer(industryWriter())
                 .build();
     }
@@ -80,7 +80,7 @@ public class IndustryBatch {
     }
 
     @Bean
-    public ItemProcessor<IndustryDTO, Industry> industryCsvProfessor(){
+    public ItemProcessor<IndustryDTO, Industry> industryCsvProcessor(){
         return InfraConverter::industryToEntity;
     }
 

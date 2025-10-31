@@ -50,7 +50,7 @@ public class JobCodeTopBatch {
         return new StepBuilder("jcTopStep", jobRepository)
                 .<JobCodeTopDTO, JobCodeTop> chunk(10, platformTransactionManager)
                 .reader(jcTopCsvReader())
-                .processor(jcTopProfessor())
+                .processor(jcTopProcessor())
                 .writer(jcTopWriter())
                 .build();
     }
@@ -80,7 +80,7 @@ public class JobCodeTopBatch {
     }
 
     @Bean
-    public ItemProcessor<JobCodeTopDTO, JobCodeTop> jcTopProfessor(){
+    public ItemProcessor<JobCodeTopDTO, JobCodeTop> jcTopProcessor(){
         return JobConverter::topToEntity;
     }
 
