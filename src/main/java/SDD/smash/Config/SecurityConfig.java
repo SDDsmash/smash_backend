@@ -34,8 +34,10 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated() //기본 거부 정책 적용
                 );
+
 
         /**
          * csrf 보호 해제
