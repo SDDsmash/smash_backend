@@ -38,7 +38,7 @@ public class JobCodeTopBatchRunner {
     @Order(3)
     public void runjcTopJobAfterStartup() throws Exception {
         if(guard.alreadyDone("jcTopJob",SEED_VERSION)){
-            log.info("jcTopJob already Done");
+            log.info("Already jcTopJob : " + SEED_VERSION );
             return;
         }
 

@@ -38,6 +38,7 @@ public class SigunguBatchRunner {
     @EventListener(ApplicationReadyEvent.class)
     public void runSigunguJobAfterStartup() throws Exception{
         if(guard.alreadyDone("SigunguJob",SEED_VERSION)){
+            log.info("Already SigunguJob : " + SEED_VERSION );
             return;
         }
 

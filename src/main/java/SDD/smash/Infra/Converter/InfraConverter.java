@@ -19,9 +19,10 @@ public class InfraConverter {
     }
     public static Infra infraToEntity(InfraDTO dto, Sigungu sigungu, Industry industry){
         return Infra.builder()
-                .count(Integer.parseInt(normalize(dto.getNum())))
+                .count(Integer.parseInt(normalize(dto.getCount())))
                 .sigungu(sigungu)
                 .industry(industry)
+                .ratio(dto.getRatio())
                 .build();
     }
 }

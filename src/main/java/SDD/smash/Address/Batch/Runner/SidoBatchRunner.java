@@ -38,6 +38,7 @@ public class SidoBatchRunner {
     @EventListener(ApplicationEvent.class)
     public void runSidoJobAfterStartup() throws Exception {
         if(guard.alreadyDone("SidoJob",SEED_VERSION)){
+            log.info("Already SidoJob : " + SEED_VERSION );
             return;
         }
 

@@ -38,7 +38,7 @@ public class JobCodeMiddleBatchRunner {
     @Order(4)
     public void runjcToMiddleJobAfterStartup() throws Exception {
         if(guard.alreadyDone("jcMiddleJob",SEED_VERSION)){
-            log.info("jcMiddleJob already Done");
+            log.info("Already jcMiddleJob : " + SEED_VERSION );
             return;
         }
 
