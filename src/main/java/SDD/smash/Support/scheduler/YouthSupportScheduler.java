@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -59,5 +60,9 @@ public class YouthSupportScheduler {
             }
         }
         log.info("[YouthSupportScheduler] 완료 — elapsed={}ms", (System.currentTimeMillis() - started));
+
+        // 모든 support:score:* 캐시 제거
+        redisTemplate.delete(Objects.requireNonNull(redisTemplate.keys("support:score:*")));
+
     }
 }
