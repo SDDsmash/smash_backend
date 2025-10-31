@@ -29,7 +29,8 @@ public class SupportScoreService {
      */
     public Map<String, Integer> getSupportScoresByTag(SupportTag tag)
     {
-        String redisKey = REDIS_KEY_PREFIX + tag.getValue();
+        String tagValue = (tag != null) ? tag.getValue() : "default";
+        String redisKey = REDIS_KEY_PREFIX + tagValue;
         var hashOps = redisTemplate.opsForHash();
 
         //캐시 확인
@@ -47,6 +48,19 @@ public class SupportScoreService {
         ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
         List<SigunguCodeDTO> sigunguCodes = sigunguRepository.findAllSigunguCodes();
         Map<String, Integer> supportScoreMap = new LinkedHashMap<>();
+
+        if(tag == null)
+        {
+            for(SigunguCodeDTO score : sigunguCodes)
+            {
+                supportScoreMap.put(score.getSigunguCode(),0);
+            }
+
+            //캐싱
+            hashOps.putAll(redisKey, new HashMap<>(supportScoreMap));
+            redisTemplate.expire(redisKey, Duration.ofDays(4)); //만료 이전에 지원정책이 스케줄러에 의해 갱신된다면, 위 키는 제거됨
+            return supportScoreMap;
+        }
 
         //각 시군구 코드에 대해 점수 계산
         for (SigunguCodeDTO dto : sigunguCodes)
