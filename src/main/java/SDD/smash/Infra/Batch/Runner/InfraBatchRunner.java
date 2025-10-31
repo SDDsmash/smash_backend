@@ -34,7 +34,6 @@ public class InfraBatchRunner {
     }
 
     @Order(7)
-    @Async
     @EventListener(ApplicationEvent.class)
     public void runInfraAfterStartup() throws Exception {
         if(guard.alreadyDone("infraJob",SEED_VERSION)){

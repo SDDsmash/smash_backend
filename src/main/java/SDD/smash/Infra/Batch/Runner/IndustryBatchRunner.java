@@ -34,7 +34,6 @@ public class IndustryBatchRunner {
     }
 
     @Order(6)
-    @Async
     @EventListener(ApplicationEvent.class)
     public void runIndustryJobAfterStartup() throws Exception {
         if(guard.alreadyDone("industryJob",SEED_VERSION)){

@@ -34,7 +34,6 @@ public class SigunguBatchRunner {
     }
 
     @Order(2)
-    @Async
     @EventListener(ApplicationReadyEvent.class)
     public void runSigunguJobAfterStartup() throws Exception{
         if(guard.alreadyDone("SigunguJob",SEED_VERSION)){
