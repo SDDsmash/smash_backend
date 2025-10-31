@@ -1,4 +1,4 @@
-package SDD.smash.Infra.Patch;
+package SDD.smash.Infra.Batch;
 
 
 import SDD.smash.Address.Entity.Sigungu;

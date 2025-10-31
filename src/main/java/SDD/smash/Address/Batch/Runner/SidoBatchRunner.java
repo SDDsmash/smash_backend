@@ -1,5 +1,6 @@
 package SDD.smash.Address.Batch.Runner;
 
+import SDD.smash.Config.SeedProperties;
 import SDD.smash.Util.BatchGuard;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,9 @@ public class SidoBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job SidoJob;
     private final BatchGuard guard;
+    private final SeedProperties seedProperties;
 
-    private static final String SEED_VERSION = "v1";
+    private final String SEED_VERSION = seedProperties.getVersion();
 
     @Order(1)
     @Async
