@@ -33,7 +33,6 @@ public class JobCodeMiddleBatchRunner {
         this.SEED_VERSION = seedProperties.getVersion();
     }
 
-    @Async
     @EventListener(ApplicationEvent.class)
     @Order(4)
     public void runjcToMiddleJobAfterStartup() throws Exception {

@@ -33,7 +33,6 @@ public class JobCodeTopBatchRunner {
         this.SEED_VERSION = seedProperties.getVersion();
     }
 
-    @Async
     @EventListener(ApplicationEvent.class)
     @Order(3)
     public void runjcTopJobAfterStartup() throws Exception {

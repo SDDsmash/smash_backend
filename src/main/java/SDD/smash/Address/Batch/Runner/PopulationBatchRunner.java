@@ -34,7 +34,6 @@ public class PopulationBatchRunner {
     }
 
     @Order(5)
-    @Async
     @EventListener(ApplicationReadyEvent.class)
     public void runPopulationJobAfterStartup() throws Exception{
         if(guard.alreadyDone("PopulationJob",SEED_VERSION)){
