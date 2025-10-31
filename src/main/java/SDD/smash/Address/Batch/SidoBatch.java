@@ -4,6 +4,7 @@ import SDD.smash.Address.Converter.AddressConverter;
 import SDD.smash.Address.Dto.SidoDTO;
 import SDD.smash.Address.Entity.Sido;
 import SDD.smash.Address.Repository.SidoRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -21,9 +22,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import static SDD.smash.Util.BatchTextUtil.addLeadingZero;
+import static SDD.smash.Util.BatchTextUtil.normalize;
 
 
 @Configuration
+@Slf4j
 public class SidoBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;

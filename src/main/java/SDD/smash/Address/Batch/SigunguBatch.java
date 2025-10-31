@@ -6,6 +6,7 @@ import SDD.smash.Address.Entity.Sido;
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SidoRepository;
 import SDD.smash.Address.Repository.SigunguRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -30,6 +31,7 @@ import static SDD.smash.Util.BatchTextUtil.*;
 
 
 @Configuration
+@Slf4j
 public class SigunguBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
@@ -104,10 +106,12 @@ public class SigunguBatch {
     public ItemProcessor<SigunguDTO, Sigungu> sigungoCsvProfessor(){
         return dto -> {
             String sidoCode = addLeadingZero(normalize(dto.getSido_code()));
-            Sido sido = resolveSido(sidoCode);
-            if (sido == null){
-                throw new IllegalAccessException("Ivalid SidoCode: " + sidoCode);
+            if(sidoCode == null){
+                log.warn("❗ Empty sido key. Skip row.");
+                return null;
             }
+            Sido sido = resolveSido(sidoCode);
+
             return AddressConverter.sigunguToEntity(dto, sido);
         };
     }

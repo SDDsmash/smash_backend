@@ -29,7 +29,6 @@ public class InfraBatchRunner {
     @EventListener(ApplicationEvent.class)
     public void runInfraAfterStartup() throws Exception {
         if(guard.alreadyDone("infraJob",SEED_VERSION)){
-            log.info("infraJob already Done");
             return;
         }
 

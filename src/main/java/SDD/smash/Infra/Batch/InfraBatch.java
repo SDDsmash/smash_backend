@@ -62,7 +62,8 @@ public class InfraBatch {
         }
         Sigungu sigungu = sigunguCache.get(sigunguCode);
         if (sigungu == null) {
-            return null; // 혹은 예외 throw
+            log.warn("❗ Unknown sigungu code: {}", sigunguCode);
+            return null;
         }
 
         return sigunguCache.get(sigunguCode);
@@ -135,7 +136,7 @@ public class InfraBatch {
             String industryCode = dto.getOpenSvcId();
             if (isBlank(sigunguKey)) {
                 log.warn("❗ Empty sigungu key. Skip row.");
-                return null; // 스킵
+                return null;
             } else if (isBlank(industryCode)) {
                 log.warn("❗ Empty industry key. Skip row.");
                 return null;

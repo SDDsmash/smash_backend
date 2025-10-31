@@ -29,7 +29,6 @@ public class PopulationBatchRunner {
     @EventListener(ApplicationReadyEvent.class)
     public void runPopulationJobAfterStartup() throws Exception{
         if(guard.alreadyDone("PopulationJob",SEED_VERSION)){
-            log.info("PopulationJob has already done");
             return;
         }
 
