@@ -1,0 +1,31 @@
+package SDD.smash.Exception.Code;
+
+import org.springframework.http.HttpStatus;
+
+public enum ErrorCode {
+
+    // address
+    ADDRESS_CODE_NOT_FOUND("ADDRESS_CODE_NOT_FOUND", HttpStatus.NOT_FOUND),
+    //end
+
+
+    // validation
+    VALIDATION_FAILED("VALIDATION_FAILED", HttpStatus.BAD_REQUEST),
+    BIND_FAILED("BIND_FAILED", HttpStatus.BAD_REQUEST),
+    MALFORMED_JSON("MALFORMED_JSON", HttpStatus.BAD_REQUEST),
+
+    METHOD_NOT_ALLOWED("METHOD_NOT_ALLOWED", HttpStatus.METHOD_NOT_ALLOWED),
+    UNSUPPORTED_MEDIA_TYPE("UNSUPPORTED_MEDIA_TYPE", HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    //end
+    ;
+
+
+    public final String code;
+    public final HttpStatus status;
+
+    ErrorCode(String code, HttpStatus httpStatus)
+    {
+        this.code = code;
+        this.status = httpStatus;
+    }
+}
