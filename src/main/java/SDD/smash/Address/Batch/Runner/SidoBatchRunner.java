@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -14,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class SidoBatchRunner {
     private final JobLauncher jobLauncher;
@@ -22,7 +22,16 @@ public class SidoBatchRunner {
     private final BatchGuard guard;
     private final SeedProperties seedProperties;
 
-    private final String SEED_VERSION = seedProperties.getVersion();
+    private final String SEED_VERSION;
+
+    public SidoBatchRunner(JobLauncher jobLauncher, @Qualifier("SidoJob") Job sidoJob,
+                           BatchGuard guard, SeedProperties seedProperties) {
+        this.jobLauncher = jobLauncher;
+        SidoJob = sidoJob;
+        this.guard = guard;
+        this.seedProperties = seedProperties;
+        this.SEED_VERSION = seedProperties.getVersion();
+    }
 
     @Order(1)
     @Async
