@@ -3,8 +3,10 @@ package SDD.smash.Infra.Converter;
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Infra.Dto.IndustryDTO;
 import SDD.smash.Infra.Dto.InfraDTO;
+import SDD.smash.Infra.Dto.InfraScoreDTO;
 import SDD.smash.Infra.Entity.Industry;
 import SDD.smash.Infra.Entity.Infra;
+import SDD.smash.Infra.Entity.InfraScore;
 import SDD.smash.Infra.Entity.Major;
 
 import static SDD.smash.Util.BatchTextUtil.normalize;
@@ -23,6 +25,12 @@ public class InfraConverter {
                 .sigungu(sigungu)
                 .industry(industry)
                 .ratio(dto.getRatio())
+                .build();
+    }
+    public static InfraScore infraScoreToEntity(InfraScoreDTO dto, Sigungu sigungu){
+        return InfraScore.builder()
+                .sigungu(sigungu)
+                .score(dto.getScore())
                 .build();
     }
 }
