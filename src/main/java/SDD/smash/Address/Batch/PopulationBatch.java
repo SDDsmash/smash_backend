@@ -80,7 +80,7 @@ public class PopulationBatch {
         return new StepBuilder("populationStep", jobRepository)
                 .<PopulationDTO, Population> chunk(100, platformTransactionManager)
                 .reader(populationCsvReader())
-                .processor(populationCsvProfessor())
+                .processor(populationCsvProcessor())
                 .writer(populationWriter())
                 .build();
     }
@@ -109,7 +109,7 @@ public class PopulationBatch {
     }
 
     @Bean
-    public ItemProcessor<PopulationDTO, Population> populationCsvProfessor(){
+    public ItemProcessor<PopulationDTO, Population> populationCsvProcessor(){
         return dto -> {
             String sigunguKey = dto.getSigungu_code();
             if (BatchTextUtil.isBlank(sigunguKey)) {

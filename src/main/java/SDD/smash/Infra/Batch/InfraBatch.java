@@ -100,7 +100,7 @@ public class InfraBatch {
         return new StepBuilder("infraStep", jobRepository)
                 .<InfraDTO, Infra> chunk(500, platformTransactionManager)
                 .reader(infraCsvReader())
-                .processor(infraCsvProfessor())
+                .processor(infraCsvProcessor())
                 .writer(infraWriter())
                 .build();
     }
@@ -130,7 +130,7 @@ public class InfraBatch {
     }
 
     @Bean
-    public ItemProcessor<InfraDTO, Infra> infraCsvProfessor(){
+    public ItemProcessor<InfraDTO, Infra> infraCsvProcessor(){
         return dto -> {
             String sigunguKey = dto.getSigungu_code();
             String industryCode = dto.getOpenSvcId();

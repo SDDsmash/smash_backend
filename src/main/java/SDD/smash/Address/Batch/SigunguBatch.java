@@ -73,7 +73,7 @@ public class SigunguBatch {
         return new StepBuilder("SigunguStep", jobRepository)
                 .<SigunguDTO, Sigungu> chunk(50, platformTransactionManager)
                 .reader(sigunguCsvReader())
-                .processor(sigungoCsvProfessor())
+                .processor(sigungoCsvProcessor())
                 .writer(SigunguWriter())
                 .build();
     }
@@ -103,7 +103,7 @@ public class SigunguBatch {
     }
 
     @Bean
-    public ItemProcessor<SigunguDTO, Sigungu> sigungoCsvProfessor(){
+    public ItemProcessor<SigunguDTO, Sigungu> sigungoCsvProcessor(){
         return dto -> {
             String sidoCode = addLeadingZero(normalize(dto.getSido_code()));
             if(sidoCode == null){

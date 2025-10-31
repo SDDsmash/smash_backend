@@ -55,7 +55,7 @@ public class SidoBatch {
         return new StepBuilder("SidoStep", jobRepository)
                 .<SidoDTO, Sido> chunk(10, platformTransactionManager)
                 .reader(sidoCsvReader())
-                .processor(sidoCsvProfessor())
+                .processor(sidoCsvProcessor())
                 .writer(SidoWriter())
                 .build();
     }
@@ -84,7 +84,7 @@ public class SidoBatch {
     }
 
     @Bean
-    public ItemProcessor<SidoDTO, Sido> sidoCsvProfessor(){
+    public ItemProcessor<SidoDTO, Sido> sidoCsvProcessor(){
         return AddressConverter::sidoToEntity;
     }
 
