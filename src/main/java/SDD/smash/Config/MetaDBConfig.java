@@ -1,5 +1,6 @@
 package SDD.smash.Config;
 
+import org.springframework.boot.autoconfigure.batch.BatchDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +14,8 @@ import javax.sql.DataSource;
 @Configuration
 public class MetaDBConfig {
 
-    @Primary
-    @Bean
+    @BatchDataSource
+    @Bean(name = "batchDataSource")
     @ConfigurationProperties(prefix = "spring.datasource-meta")
     public DataSource metaDBSource() {
 
