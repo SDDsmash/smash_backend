@@ -1,9 +1,6 @@
 package SDD.smash.Dwelling.Converter;
 
-import SDD.smash.Address.Entity.Sigungu;
-import SDD.smash.Address.Repository.SigunguRepository;
 import SDD.smash.Dwelling.Dto.DwellingDTO;
-import SDD.smash.Dwelling.Entity.Dwelling;
 
 
 import java.util.List;

@@ -16,8 +16,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static SDD.smash.Infra.Converter.InfraConverter.infraToEntity;
@@ -101,7 +103,7 @@ public class InfraBatch {
                 .<InfraDTO, Infra> chunk(500, platformTransactionManager)
                 .reader(infraCsvReader())
                 .processor(infraCsvProcessor())
-                .writer(infraWriter())
+                .writer(infraWriter(infraRepository))
                 .build();
     }
 
@@ -118,13 +120,15 @@ public class InfraBatch {
                 .delimited()
                 .delimiter(",")
                 .quoteCharacter('\0')
-                .names("sigungu_code", "opnSvcId","num")
+                .names("sigungu_code", "industry_code","count","ratio")
                 .fieldSetMapper(fieldSet -> {
                     String rawSigunguCode = normalize(fieldSet.readString(0));
                     String rawIndustryCode = normalize(fieldSet.readString(1));
                     String rawInfraName = normalize(fieldSet.readString(2));
+                    BigDecimal rawRatio = new BigDecimal(normalize(fieldSet.readString(3)))
+                            .setScale(2, RoundingMode.HALF_UP);
 
-                    return new InfraDTO(rawSigunguCode, rawIndustryCode, rawInfraName);
+                    return new InfraDTO(rawSigunguCode, rawIndustryCode, rawInfraName,rawRatio);
                 })
                 .build();
     }
@@ -133,7 +137,7 @@ public class InfraBatch {
     public ItemProcessor<InfraDTO, Infra> infraCsvProcessor(){
         return dto -> {
             String sigunguKey = dto.getSigungu_code();
-            String industryCode = dto.getOpenSvcId();
+            String industryCode = dto.getIndustry_code();
             if (isBlank(sigunguKey)) {
                 log.warn("❗ Empty sigungu key. Skip row.");
                 return null;
@@ -148,12 +152,23 @@ public class InfraBatch {
         };
     }
     @Bean
-    public RepositoryItemWriter<Infra> infraWriter() {
+    public ItemWriter<Infra> infraWriter(InfraRepository infraRepository) {
 
-        return new RepositoryItemWriterBuilder<Infra>()
-                .repository(infraRepository)
-                .methodName("save")
-                .build();
+        return items -> {
+            Map<String, Infra> dedup = new LinkedHashMap<>();
+            for (Infra infra : items) {
+                String key = infra.getSigungu().getSigunguCode() + "|" + infra.getIndustry().getCode();
+                dedup.put(key, infra);
+            }
+            for (Infra infra : dedup.values()) {
+                infraRepository.findBySigunguAndIndustry(infra.getSigungu(), infra.getIndustry())
+                        .ifPresentOrElse(existing -> {
+                            existing.setCount(infra.getCount());
+                            existing.setRatio(infra.getRatio());
+                            infraRepository.save(existing); // update
+                        }, () -> infraRepository.save(infra)); // insert
+            }
+        };
     }
 
 }

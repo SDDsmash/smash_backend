@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -15,12 +16,14 @@ import java.util.HashMap;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "SDD.smash", // 어떤 패키지에서 작동되게 할 것인지
-        entityManagerFactoryRef = "dataEntityManager", // 어떤 엔티티 매니저를 사용할 것인지
-        transactionManagerRef = "dataTransactionManager" // 어떤 트랜잭션 매니저를 사용할 것인지
+        basePackages = "SDD.smash",
+        entityManagerFactoryRef = "dataEntityManager",
+        transactionManagerRef = "dataTransactionManager"
 )
 public class DataDBConfig {
-    @Bean
+
+    @Primary
+    @Bean(name = "dataDBSource")
     @ConfigurationProperties(prefix = "spring.datasource-data")
     public DataSource dataDBSource() {
 

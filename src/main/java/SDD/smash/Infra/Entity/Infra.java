@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(
         name = "infra",
@@ -43,4 +45,8 @@ public class Infra {
     @Column(name = "`count`", nullable = false)
     @NotNull
     private Integer count;
+
+    @Column(name = "ratio", precision = 18, scale = 2, nullable = false)
+    @NotNull
+    private BigDecimal ratio;
 }

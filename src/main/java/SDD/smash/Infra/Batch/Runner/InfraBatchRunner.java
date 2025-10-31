@@ -2,16 +2,14 @@ package SDD.smash.Infra.Batch.Runner;
 
 import SDD.smash.Config.SeedProperties;
 import SDD.smash.Util.BatchGuard;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,10 +32,10 @@ public class InfraBatchRunner {
     }
 
     @Order(7)
-    @Async
-    @EventListener(ApplicationEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void runInfraAfterStartup() throws Exception {
         if(guard.alreadyDone("infraJob",SEED_VERSION)){
+            log.info("Already infraJob : " + SEED_VERSION );
             return;
         }
 
