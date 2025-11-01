@@ -49,7 +49,7 @@ public class DwellingScoreSerivce {
 
         if(type == DwellingType.MONTHLY)
         {
-            //월세 중앙 값 리스트를 가져온 뒤, 해당 시군구의 monthMid와 10단위 차이마다 100점에서 1점씩 감점(ex. monthMid=80이고 price=60인 경우 20차이므로 100-20 = 80), 최소 0점
+            //월세 중앙 값 리스트를 가져온 뒤, 해당 시군구의 monthMid와 10단위 차이마다 100점에서 10점씩 감점(ex. monthMid=80이고 price=60인 경우 20차이므로 100-20 = 80), 최소 0점
             List<DwellingMonthDTO> dwellingScores = dwellingRepository.getAllDwellingMonth();
             int score;
             for(DwellingMonthDTO monthDTO : dwellingScores)
@@ -61,7 +61,7 @@ public class DwellingScoreSerivce {
         }
         else
         {
-            //전세 중앙 값 리스트를 가져온 뒤, 해당 시군구의 jeonseMid와 1000단위 차이마다 100점에서 10점씩 감점(ex. jeonseMid=8000이고 price=10000인 경우 2000차이므로 100-20 = 80), 최소 0점
+            //전세 중앙 값 리스트를 가져온 뒤, 해당 시군구의 jeonseMid와 3000단위 차이마다 100점에서 10점씩 감점(ex. jeonseMid=8000이고 price=10000인 경우 2000차이므로 100-20 = 80), 최소 0점
             List<DwellingJeonseDTO> dwellingScores = dwellingRepository.getAllDwellingJeonse();
             int score;
             for(DwellingJeonseDTO jeonseDTO : dwellingScores)
@@ -81,8 +81,9 @@ public class DwellingScoreSerivce {
 
 
     /**
-     * 월세의 경우 10만원의 배수로 변환하며 전세의 경우 1000만원의 배수로 변경한다.
-     * 110, 11000의 경우 이상의 의미를 가짐.
+     * 월세의 경우 20만원~110만원이상의 범위로 변환
+     * 전세의 경우 3000만원~21000만원이상 범위로 변경한다.
+     * 110, 21000의 경우 이상의 의미를 가짐.
      */
     private Integer validPrice(DwellingType type, Integer price)
     {
@@ -91,12 +92,14 @@ public class DwellingScoreSerivce {
         }
         if(type == DwellingType.MONTHLY)
         {
-            return Math.max(20, Math.min(price, 110));
+            int adjusted = (int) (Math.round(price / 10.0) * 10);
+            return Math.max(20, Math.min(adjusted, 110));
 
         }
-        else
+        else // 3 6 9 12 15 18 21
         {
-            return Math.max(1000, Math.min(price,11000));
+            int adjusted = (int) (Math.round(price / 3000.0)*3000);
+            return Math.max(3000, Math.min(adjusted,21000));
         }
     }
 
@@ -120,16 +123,16 @@ public class DwellingScoreSerivce {
     /**
      * 전세 점수 계산
      * - diff = |중앙값 - 사용자가격|
-     * - 1000단위 차이마다 10점 감점
+     * - 3000단위 차이마다 10점 감점
      * - 최소 0점
      */
     int calcJeonseScore(Integer jeonseMid, Integer price)
     {
         if(jeonseMid == null) return 0;
-        if(price == 11000 && jeonseMid >= price) return 100;
+        if(price == 21000 && jeonseMid >= price) return 100;
 
         int diff = Math.abs(jeonseMid-price);
-        int penalty = (diff / 1000) * 10;
+        int penalty = (diff / 3000) * 10;
         int score = 100 - penalty;
         return Math.max(score, 0);
     }
