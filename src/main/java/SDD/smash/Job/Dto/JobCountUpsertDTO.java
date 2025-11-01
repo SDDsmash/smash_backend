@@ -8,11 +8,11 @@ import lombok.Getter;
 public class JobCountUpsertDTO {
     private String sigunguCode;
     private String middleCode;
-    private Integer score;
+    private Integer count;
 
-    public JobCountUpsertDTO(String sigunguCode, String middleCode, Integer score) {
+    public JobCountUpsertDTO(String sigunguCode, String middleCode, Integer count) {
         this.sigunguCode = sigunguCode;
         this.middleCode = middleCode;
-        this.score = score;
+        this.count = count;
     }
 }

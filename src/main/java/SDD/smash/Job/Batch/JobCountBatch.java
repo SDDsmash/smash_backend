@@ -32,8 +32,7 @@ import javax.sql.DataSource;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static SDD.smash.Util.BatchTextUtil.isBlank;
-import static SDD.smash.Util.BatchTextUtil.normalize;
+import static SDD.smash.Util.BatchTextUtil.*;
 
 
 @Configuration
@@ -108,9 +107,9 @@ public class JobCountBatch {
                 .fieldSetMapper(fieldSet -> {
                     String sigungu_code = normalize(fieldSet.readString(0));
                     String middle_code = normalize(fieldSet.readString(1));
-                    Integer score = Integer.parseInt(normalize(fieldSet.readString(2)));
+                    Integer count = Integer.parseInt(normalize(fieldSet.readString(2)));
 
-                    return new JobCountCsvDTO(sigungu_code, middle_code, score);
+                    return new JobCountCsvDTO(sigungu_code, middle_code, count);
                 })
                 .build();
     }
@@ -119,7 +118,7 @@ public class JobCountBatch {
     public ItemProcessor<JobCountCsvDTO, JobCountUpsertDTO> jobCountCsvProcessor(){
         return dto -> {
             String sigunguCode = dto.getSigungu_code();
-            String middleCode  = dto.getMiddle_code();
+            String middleCode  = addLeadingZeroThird(dto.getMiddle_code());
             if(isBlank(sigunguCode) || !isKnownSigunguCode(sigunguCode)){
                 return null;
             } else if(isBlank(middleCode) || !isKnownMiddleCode(middleCode)){
@@ -128,7 +127,7 @@ public class JobCountBatch {
             return JobCountUpsertDTO.builder()
                     .sigunguCode(sigunguCode)
                     .middleCode(middleCode)
-                    .score(dto.getScore())
+                    .count(dto.getCount())
                     .build();
         };
     }
