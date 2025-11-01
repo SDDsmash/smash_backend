@@ -58,12 +58,10 @@ public class SecurityConfig {
 
                                 List<String> allowed = Arrays.asList(frontUrl);
                                 config.setAllowedOrigins(allowed);
-                                config.setAllowedMethods(singletonList("*")); // 허용할 메소드 Get ect on
-                                config.setAllowCredentials(true);
-                                config.setAllowedHeaders(singletonList("*"));
+                                config.setAllowedMethods(List.of("GET", "OPTIONS")); // GET, OPTIONS(프리플라이트)만 허용
+                                config.setAllowCredentials(false); // 비회원 + 쿠기 사용 안함
+                                config.setAllowedHeaders(List.of("Content-Type", "Accept"));
                                 config.setMaxAge(3600L);
-
-                                config.setExposedHeaders(singletonList("Authorization"));
 
                                 return config;
                             }
