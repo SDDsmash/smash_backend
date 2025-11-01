@@ -42,6 +42,8 @@ public class JobService {
      */
     public JobInfoDTO getJobInfoBySigunguAndJobCode(String sigunguCode, String jobMidCode)
     {
+        if(jobMidCode == null) return null;
+
         //시군구 코드 존재 확인
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
 
