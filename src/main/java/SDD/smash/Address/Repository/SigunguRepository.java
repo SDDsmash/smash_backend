@@ -2,6 +2,7 @@ package SDD.smash.Address.Repository;
 
 import SDD.smash.Address.Dto.SigunguCodeDTO;
 import SDD.smash.Address.Entity.Sigungu;
+import SDD.smash.Apis.Dto.CodeNameDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,15 @@ public interface SigunguRepository extends JpaRepository<Sigungu,String> {
 
     boolean existsBySigunguCode(String sigunguCode);
 
+
+    @Query("""
+    SELECT new SDD.smash.Apis.Dto.CodeNameDTO(
+    sgg.sido.sidoCode,
+    sgg.sido.name,
+    sgg.sigunguCode,
+    sgg.name
+    )
+    FROM Sigungu sgg
+    """)
+    List<CodeNameDTO> findAllCodeNames();
 }

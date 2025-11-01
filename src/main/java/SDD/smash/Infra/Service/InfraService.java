@@ -35,6 +35,7 @@ public class InfraService {
             if(_infraMajor.isPresent())
             {
                 list.add(_infraMajor.get());
+                continue;
             }
             //인프라 정보가 없는 경우 -> 적재된 데이터의 문제라서 로그찍고 넘어감
             log.warn("{}지역의 인프라 정보가 없습니다.", sigunguCode);

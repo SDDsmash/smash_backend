@@ -17,7 +17,7 @@ public class SupportService {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private AddressVerifyService addressVerifyService;
+    private final AddressVerifyService addressVerifyService;
 
     /**
      * 해당 시군구의 모든 정책 개수 반환
@@ -33,7 +33,7 @@ public class SupportService {
 
         for(SupportTag tag : SupportTag.values())
         {
-            String numKey = sigunguCode + ":" + tag.getValue() + "NUM";
+            String numKey = sigunguCode + ":" + tag.getValue() + ":" + "NUM";
             Object value = ops.get(numKey);
             if(value instanceof Number)
             {
@@ -50,6 +50,8 @@ public class SupportService {
      */
     public Integer getFitSupportNum(String sigunguCode, SupportTag tag)
     {
+        if(tag == null) return null;
+
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
 
         ValueOperations<String, Object> ops = redisTemplate.opsForValue();

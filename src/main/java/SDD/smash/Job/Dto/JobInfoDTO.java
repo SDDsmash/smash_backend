@@ -1,7 +1,9 @@
 package SDD.smash.Job.Dto;
 
+import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 public class JobInfoDTO {
 
     private Long count;
