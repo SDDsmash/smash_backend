@@ -5,7 +5,7 @@ import SDD.smash.Exception.Code.ErrorCode;
 import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.Job.Dto.JobInfoDTO;
 import SDD.smash.Job.Repository.JobCodeMiddleRepository;
-import SDD.smash.Job.Repository.JobRepository;
+import SDD.smash.Job.Repository.JobsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class JobService {
 
     private final AddressVerifyService addressVerifyService;
 
-    private final JobRepository jobRepository;
+    private final JobsRepository jobsRepository;
     private final JobCodeMiddleRepository jobCodeMiddleRepository;
 
 
@@ -30,7 +30,7 @@ public class JobService {
         // 시군구 코드 존재 확인
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
 
-        JobInfoDTO jobInfo = jobRepository.findJobInfo(sigunguCode);
+        JobInfoDTO jobInfo = jobsRepository.findJobInfo(sigunguCode);
         if(jobInfo == null) return null;
 
         jobInfo.setUrl(generateUrl(sigunguCode));
@@ -42,6 +42,8 @@ public class JobService {
      */
     public JobInfoDTO getJobInfoBySigunguAndJobCode(String sigunguCode, String jobMidCode)
     {
+        if(jobMidCode == null) return null;
+
         //시군구 코드 존재 확인
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
 
@@ -51,7 +53,7 @@ public class JobService {
             throw new BusinessException(ErrorCode.JOB_CODE_NOT_FOUND, "유효하지 않은 직종 코드입니다.");
         }
 
-        JobInfoDTO jobInfo = jobRepository.findJobInfoByCode(sigunguCode, jobMidCode);
+        JobInfoDTO jobInfo = jobsRepository.findJobInfoByCode(sigunguCode, jobMidCode);
         if(jobInfo == null) return null;
 
         jobInfo.setUrl(generateFitUrl(sigunguCode, jobMidCode));

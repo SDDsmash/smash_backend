@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface JobRepository extends JpaRepository<Job, Long> {
+public interface JobsRepository extends JpaRepository<Job, Long> {
 
     @Query("""
         SELECT new SDD.smash.Job.Dto.JobCountDTO(
