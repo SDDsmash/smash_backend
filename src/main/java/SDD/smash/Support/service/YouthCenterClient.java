@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -58,7 +59,7 @@ public class YouthCenterClient {
                         .toList();
             }
         }
-        return new FetchResult(totalCount, new SupportListDTO(list));
+        return new FetchResult(totalCount, new SupportListDTO(new ArrayList<>(list)));
     }
 
     @Getter

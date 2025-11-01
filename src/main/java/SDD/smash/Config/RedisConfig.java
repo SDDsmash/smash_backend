@@ -1,5 +1,6 @@
 package SDD.smash.Config;
 
+import SDD.smash.Support.dto.SupportListDTO;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -45,4 +47,23 @@ public class RedisConfig {
         template.afterPropertiesSet();
         return template;
     }
+
+    @Bean
+    public RedisTemplate<String, SupportListDTO> supportListDTORedisTemplate(RedisConnectionFactory cf) {
+        RedisTemplate<String, SupportListDTO> template = new RedisTemplate<>();
+        template.setConnectionFactory(cf);
+        template.setKeySerializer(new StringRedisSerializer());
+
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+
+        var javaType = om.getTypeFactory().constructType(SupportListDTO.class);
+        var serializer = new Jackson2JsonRedisSerializer<SupportListDTO>(javaType);
+
+        template.setValueSerializer(serializer);
+        template.setHashValueSerializer(serializer);
+        template.afterPropertiesSet();
+        return template;
+    }
+
 }

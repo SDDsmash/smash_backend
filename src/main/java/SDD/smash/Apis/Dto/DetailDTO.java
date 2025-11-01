@@ -4,13 +4,14 @@ import SDD.smash.Dwelling.Dto.DwellingInfoDTO;
 import SDD.smash.Infra.Dto.InfraDetails;
 import SDD.smash.Job.Dto.JobInfoDTO;
 import SDD.smash.Support.dto.SupportListDTO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
-@Setter
+@Builder
 public class DetailDTO {
 
     private String sidoCode;

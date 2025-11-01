@@ -43,4 +43,18 @@ public interface SigunguRepository extends JpaRepository<Sigungu,String> {
 
     """)
     List<CodeDTO> getCodeDTOListBySidoCode(@Param("sidoCode") String sidoCode);
+
+
+    @Query("""
+
+            SELECT new SDD.smash.Apis.Dto.CodeNameDTO(
+            sgg.sido.sidoCode,
+            sgg.sido.name,
+            sgg.sigunguCode,
+            sgg.name
+            )
+            FROM Sigungu sgg
+            WHERE sgg.sigunguCode = :sigunguCode
+    """)
+    CodeNameDTO findCodeNameBySigunguCode(@Param("sigunguCode")String sigunguCode);
 }
