@@ -12,6 +12,10 @@ public enum ErrorCode {
     JOB_CODE_NOT_FOUND("JOB_CODE_NOT_FOUND", HttpStatus.NOT_FOUND),
     //end
 
+    // dwelling
+    PRICE_AMOUNT_NOT_VALID("PRICE_AMOUNT_NOT_VALID", HttpStatus.BAD_REQUEST),
+    //end
+
     // validation
     VALIDATION_FAILED("VALIDATION_FAILED", HttpStatus.BAD_REQUEST),
     BIND_FAILED("BIND_FAILED", HttpStatus.BAD_REQUEST),
