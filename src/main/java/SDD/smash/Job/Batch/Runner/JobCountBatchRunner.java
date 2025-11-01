@@ -31,8 +31,8 @@ public class JobCountBatchRunner {
         this.SEED_VERSION = seedProperties.getVersion();
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Order(3)
+//    @EventListener(ApplicationReadyEvent.class)
+//    @Order(9)
     public void runjobCountJobAfterStartup() throws Exception {
         if(guard.alreadyDone("jobCountJob",SEED_VERSION)){
             log.info("Already jobCountJob : " + SEED_VERSION );
