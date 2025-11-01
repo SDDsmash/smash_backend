@@ -1,9 +1,12 @@
-package SDD.smash.Address.Batch;
+package SDD.smash.Job.Batch;
 
-import SDD.smash.Address.Dto.PopulationDTO;
-import SDD.smash.Address.Dto.PopulationUpsertDTO;
+
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SigunguRepository;
+import SDD.smash.Job.Dto.JobCountCsvDTO;
+import SDD.smash.Job.Dto.JobCountUpsertDTO;
+import SDD.smash.Job.Entity.JobCodeMiddle;
+import SDD.smash.Job.Repository.JobCodeMiddleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -35,52 +38,64 @@ import static SDD.smash.Util.BatchTextUtil.*;
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
-public class PopulationBatch {
+public class JobCountBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
-    private final SigunguRepository sigunguRepository;
+    private final JobCodeMiddleRepository jobCodeMiddleRepository;
     private final @Qualifier("dataDBSource") DataSource dataDataSource;
+    private final SigunguRepository sigunguRepository;
 
 
     private Set<String> sigunguCodeCache = null;
+    private Set<String> middleCodeCache = null;
 
-    private boolean isKnownSigunguCode(String code) {
+    private boolean isKnownSigunguCode(String sigunguCode) {
         if (sigunguCodeCache == null) {
             sigunguCodeCache = sigunguRepository.findAll()
                     .stream()
                     .map(Sigungu::getSigunguCode)
                     .collect(Collectors.toSet());
         }
-        return sigunguCodeCache.contains(code);
+        return sigunguCodeCache.contains(sigunguCode);
     }
 
-    @Value("${population.filePath}")
+    private boolean isKnownMiddleCode(String middleCode) {
+        if (middleCodeCache == null) {
+            middleCodeCache = jobCodeMiddleRepository.findAll()
+                    .stream()
+                    .map(JobCodeMiddle::getCode)
+                    .collect(Collectors.toSet());
+        }
+        return middleCodeCache.contains(middleCode);
+    }
+
+    @Value("${jobCount.filePath}")
     private String filePath;
 
     @Bean
-    public Job PopulationJob(){
-        return new JobBuilder("PopulationJob", jobRepository)
-                .start(populationStep())
+    public Job jobCountJob(){
+        return new JobBuilder("jobCountJob", jobRepository)
+                .start(jobCountStep())
                 .build();
     }
 
     @Bean
-    public Step populationStep() {
+    public Step jobCountStep() {
 
-        return new StepBuilder("populationStep", jobRepository)
-                .<PopulationDTO, PopulationUpsertDTO> chunk(100, platformTransactionManager)
-                .reader(populationCsvReader())
-                .processor(populationCsvProcessor())
-                .writer(populationWriter())
+        return new StepBuilder("jobCountStep", jobRepository)
+                .<JobCountCsvDTO, JobCountUpsertDTO> chunk(500, platformTransactionManager)
+                .reader(jobCountCsvReader())
+                .processor(jobCountCsvProcessor())
+                .writer(jobCountWriter())
                 .build();
     }
 
     @Bean
     @StepScope
-    public FlatFileItemReader<PopulationDTO> populationCsvReader() {
+    public FlatFileItemReader<JobCountCsvDTO> jobCountCsvReader() {
 
-        return new FlatFileItemReaderBuilder<PopulationDTO>()
-                .name("populationCsvReader")
+        return new FlatFileItemReaderBuilder<JobCountCsvDTO>()
+                .name("jobCountCsvReader")
                 .resource(new FileSystemResource(filePath))
                 .encoding("MS949")
                 .linesToSkip(1)
@@ -88,36 +103,44 @@ public class PopulationBatch {
                 .delimited()
                 .delimiter(",")
                 .quoteCharacter('\0')
-                .names("sigungu_code", "population")
+                .names("sigungu_code", "job_code","count")
                 .fieldSetMapper(fieldSet -> {
-                    String sigunguCode = normalize(fieldSet.readString(0));
-                    String pop = digitsOnly(fieldSet.readString(1));
+                    String sigungu_code = normalize(fieldSet.readString(0));
+                    String middle_code = normalize(fieldSet.readString(1));
+                    Integer count = Integer.parseInt(normalize(fieldSet.readString(2)));
 
-                    return new PopulationDTO(sigunguCode,pop);
+                    return new JobCountCsvDTO(sigungu_code, middle_code, count);
                 })
                 .build();
     }
 
     @Bean
-    public ItemProcessor<PopulationDTO, PopulationUpsertDTO> populationCsvProcessor(){
+    public ItemProcessor<JobCountCsvDTO, JobCountUpsertDTO> jobCountCsvProcessor(){
         return dto -> {
             String sigunguCode = dto.getSigungu_code();
-            if (isBlank(sigunguCode) || !isKnownSigunguCode(sigunguCode)) return null;
-            return PopulationUpsertDTO.builder()
+            String middleCode  = addLeadingZeroThird(dto.getMiddle_code());
+            if(isBlank(sigunguCode) || !isKnownSigunguCode(sigunguCode)){
+                return null;
+            } else if(isBlank(middleCode) || !isKnownMiddleCode(middleCode)){
+                return null;
+            }
+            return JobCountUpsertDTO.builder()
                     .sigunguCode(sigunguCode)
-                    .population(dto.getPopulation())
+                    .middleCode(middleCode)
+                    .count(dto.getCount())
                     .build();
         };
     }
     @Bean
-    public JdbcBatchItemWriter<PopulationUpsertDTO> populationWriter() {
+    public JdbcBatchItemWriter<JobCountUpsertDTO> jobCountWriter() {
+
         String upsertSql = """
-        INSERT INTO Population (sigungu_code, population_count)
-        VALUES (:sigunguCode, :population)
-        ON DUPLICATE KEY UPDATE population_count = VALUES(population_count)
+            INSERT INTO JobCount (sigungu_code, job_code_middle_code, count)
+            VALUES (:sigunguCode, :middleCode, :count)
+            ON DUPLICATE KEY UPDATE count = VALUES(count)
             """;
 
-        return new JdbcBatchItemWriterBuilder<PopulationUpsertDTO>()
+        return new JdbcBatchItemWriterBuilder<JobCountUpsertDTO>()
                 .dataSource(dataDataSource)
                 .sql(upsertSql)
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())

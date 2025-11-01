@@ -1,4 +1,4 @@
-package SDD.smash.Infra.Batch.Runner;
+package SDD.smash.Job.Batch.Runner;
 
 import SDD.smash.Config.SeedProperties;
 import SDD.smash.Util.BatchGuard;
@@ -14,37 +14,38 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class InfraBatchRunner {
+public class JobCountBatchRunner {
     private final JobLauncher jobLauncher;
-    private final Job infraJob;
+    private final Job jobCountJob;
     private final BatchGuard guard;
     private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
-    public InfraBatchRunner(JobLauncher jobLauncher, @Qualifier("infraJob") Job infraJob,
-                            BatchGuard guard, SeedProperties seedProperties) {
+    public JobCountBatchRunner(JobLauncher jobLauncher, @Qualifier("jobCountJob") Job jobCountJob,
+                               BatchGuard guard, SeedProperties seedProperties) {
         this.jobLauncher = jobLauncher;
-        this.infraJob = infraJob;
+        this.jobCountJob = jobCountJob;
         this.guard = guard;
         this.seedProperties = seedProperties;
-        this.SEED_VERSION = "v100";
+        this.SEED_VERSION = seedProperties.getVersion();
     }
 
-    @Order(7)
     @EventListener(ApplicationReadyEvent.class)
-    public void runInfraAfterStartup() throws Exception {
-        if(guard.alreadyDone("infraJob",SEED_VERSION)){
-            log.info("Already infraJob : " + SEED_VERSION );
+    @Order(9)
+    public void runjobCountJobAfterStartup() throws Exception {
+        if(guard.alreadyDone("jobCountJob",SEED_VERSION)){
+            log.info("Already jobCountJob : " + SEED_VERSION );
             return;
         }
 
         jobLauncher.run(
-                infraJob,
+                jobCountJob,
                 new JobParametersBuilder()
                         .addString("seedVersion", SEED_VERSION)
                         .toJobParameters()
         );
 
     }
+
 }

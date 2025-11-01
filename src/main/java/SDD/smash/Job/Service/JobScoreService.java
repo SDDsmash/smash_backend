@@ -4,7 +4,7 @@ import SDD.smash.Exception.Code.ErrorCode;
 import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.Job.Dto.JobCountDTO;
 import SDD.smash.Job.Repository.JobCodeMiddleRepository;
-import SDD.smash.Job.Repository.JobsRepository;
+import SDD.smash.Job.Repository.JobCountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class JobScoreService {
 
     private static final String REDIS_KEY_PREFIX = "job:score:";
 
-    private final JobsRepository jobsRepository;
+    private final JobCountRepository jobCountRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final JobCodeMiddleRepository jobCodeMiddleRepository;
 
@@ -65,11 +65,11 @@ public class JobScoreService {
         //case 1: jobMidCode가 없는 경우 -> sigungu별 전체 일자리 개수로 백분율을 매겨 0~100사이의 점수로 만든다.
         if(jobCodeMiddleCode == null)
         {
-            list = jobsRepository.findAllTotalJobCount();
+            list = jobCountRepository.findAllTotalJobCount();
         }
         else //case 2: jobMidCode가 있는 경우 -> sigungu별 해당 jobCodeMiddle.code의 count를 기준으로 백분율을 매겨 0~100 사이의 점수로 만든다.
         {
-            list = jobsRepository.findAllJobCode(jobCodeMiddleCode);
+            list = jobCountRepository.findAllJobCode(jobCodeMiddleCode);
         }
 
         //최대값 구하기

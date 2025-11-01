@@ -1,9 +1,7 @@
 package SDD.smash.Address.Converter;
 
-import SDD.smash.Address.Dto.PopulationDTO;
 import SDD.smash.Address.Dto.SidoDTO;
 import SDD.smash.Address.Dto.SigunguDTO;
-import SDD.smash.Address.Entity.Population;
 import SDD.smash.Address.Entity.Sido;
 import SDD.smash.Address.Entity.Sigungu;
 
@@ -22,13 +20,6 @@ public class AddressConverter {
                 .name(normalize(dto.getName()))
                 .sigunguCode(normalize(dto.getSigungu_code()))
                 .sido(sido)
-                .build();
-    }
-
-    public static Population populationToEntity(PopulationDTO dto, Sigungu sigungu){
-        return Population.builder()
-                .sigungu(sigungu)
-                .populationCount(Integer.parseInt(normalize(dto.getPopulation())))
                 .build();
     }
 }

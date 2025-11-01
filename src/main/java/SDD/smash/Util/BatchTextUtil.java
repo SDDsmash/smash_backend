@@ -16,6 +16,19 @@ public class BatchTextUtil {
         return code;
     }
 
+    public static String addLeadingZeroThird(String code) {
+        if (code == null) return null;
+        code = code.replace("\uFEFF", "").trim();
+
+        if (code.matches("\\d+")) {
+            int num = Integer.parseInt(code);
+            if (num < 100) {
+                return String.format("%03d", num);
+            }
+            return String.valueOf(num);
+        }
+        return code;
+    }
     /**
      * 보이지 않는 공백들 제거
      * */

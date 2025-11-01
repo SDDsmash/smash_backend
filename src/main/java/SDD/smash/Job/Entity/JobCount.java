@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Entity
 @Table(
-        name="Job",
+        name="JobCount",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"sigungu_code", "job_code_middle_code"})
         }
 )
 @Getter
-public class Job {
+public class JobCount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
