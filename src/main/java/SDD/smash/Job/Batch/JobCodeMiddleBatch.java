@@ -113,7 +113,7 @@ public class JobCodeMiddleBatch {
             String jobCodeTop = addLeadingZero(normalize(dto.getUpstream()));
             JobCodeTop jct = resolveSido(jobCodeTop);
             if (jct == null) {
-                throw new IllegalArgumentException("Invalid jobCodeTop: " + jobCodeTop);
+                return null;
             }
             return JobConverter.middleToEntity(dto,jct);
         };

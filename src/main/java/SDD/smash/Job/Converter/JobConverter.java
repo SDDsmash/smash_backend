@@ -5,8 +5,7 @@ import SDD.smash.Job.Dto.JobCodeTopDTO;
 import SDD.smash.Job.Entity.JobCodeMiddle;
 import SDD.smash.Job.Entity.JobCodeTop;
 
-import static SDD.smash.Util.BatchTextUtil.addLeadingZero;
-import static SDD.smash.Util.BatchTextUtil.normalize;
+import static SDD.smash.Util.BatchTextUtil.*;
 
 public class JobConverter {
     public static JobCodeTop topToEntity(JobCodeTopDTO dto){
@@ -16,11 +15,11 @@ public class JobConverter {
                 .build();
     }
 
-    public static JobCodeMiddle middleToEntity(JobCodeMiddleDTO dto, JobCodeTop entity) {
+    public static JobCodeMiddle middleToEntity(JobCodeMiddleDTO dto, JobCodeTop jobCodeTop) {
         return JobCodeMiddle.builder()
-                .code(addLeadingZero(normalize(dto.getCode())))
+                .code(addLeadingZeroThird(normalize(dto.getCode())))
                 .name(normalize(dto.getName()))
-                .jobCodeTop(entity)
+                .jobCodeTop(jobCodeTop)
                 .build();
     }
 
