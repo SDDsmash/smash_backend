@@ -1,0 +1,22 @@
+# 개발 환경용 docker-compose.yaml
+name: backend
+
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+    ports:
+      - '8080:8080'
+    env_file:
+      - ./backend.env
+    depends_on:
+      my-redis:
+        condition: service_healthy
+
+  my-redis:
+    image: redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      retries: 10
