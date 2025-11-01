@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +17,7 @@ import java.util.List;
 public class SupportService {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, SupportListDTO> listRedisTemplate;
 
     private final AddressVerifyService addressVerifyService;
 
@@ -73,18 +75,19 @@ public class SupportService {
     {
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
 
-        ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+        ValueOperations<String, SupportListDTO> ops = listRedisTemplate.opsForValue();
 
         SupportListDTO dto = null;
 
         for(SupportTag tag : SupportTag.values())
         {
             String baseKey = sigunguCode + ":" + tag.getValue();
-            Object value = ops.get(baseKey);
-            if(value instanceof SupportListDTO)
+            SupportListDTO value = ops.get(baseKey);
+            if(value != null)
             {
                 if(dto == null) dto = new SupportListDTO();
-                List<SupportDTO> list = ((SupportListDTO) value).getSupportDTOList();
+                dto.setSupportDTOList(new ArrayList<SupportDTO>());
+                List<SupportDTO> list = value.getSupportDTOList();
                 dto.getSupportDTOList().addAll(list);
             }
         }
