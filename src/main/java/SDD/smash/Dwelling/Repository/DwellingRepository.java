@@ -35,22 +35,26 @@ public interface DwellingRepository extends JpaRepository<Dwelling,Long> {
     List<DwellingJeonseDTO> getAllDwellingJeonse();
 
     @Query("""
-    SELECT new SDD.smash.Dwelling.Dto.DwellingSimpleInfoDTO(
+
+            SELECT new SDD.smash.Dwelling.Dto.DwellingSimpleInfoDTO(
     d.monthMid,
     d.jeonseMid
     )
     FROM Dwelling d
+    WHERE d.sigungu.sigunguCode= :sigunguCode
     """)
     Optional<DwellingSimpleInfoDTO> getDwellingSimpleInfo(String sigunguCode);
 
     @Query("""
-    SELECT new SDD.smash.Dwelling.Dto.DwellingInfoDTO(
+
+            SELECT new SDD.smash.Dwelling.Dto.DwellingInfoDTO(
     d.monthAvg,
     d.monthMid,
     d.jeonseAvg,
     d.jeonseMid
     )
     FROM Dwelling d
+    WHERE d.sigungu.sigunguCode= :sigunguCode
     """)
     Optional<DwellingInfoDTO> getDwellingInfo(String sigunguCode);
 }
