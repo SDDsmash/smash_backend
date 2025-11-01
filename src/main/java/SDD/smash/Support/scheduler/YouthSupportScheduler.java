@@ -3,6 +3,7 @@ package SDD.smash.Support.scheduler;
 import SDD.smash.Address.Dto.SigunguCodeDTO;
 import SDD.smash.Address.Repository.SigunguRepository;
 import SDD.smash.Support.domain.SupportTag;
+import SDD.smash.Support.dto.SupportListDTO;
 import SDD.smash.Support.service.YouthCenterClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -25,12 +26,13 @@ public class YouthSupportScheduler {
     private final SigunguRepository sigunguRepository;
     private final YouthCenterClient youthCenterClient;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, SupportListDTO> listRedisTemplate;
 
     /**
      * 이후 3일 간격으로 반복 수행
      * initialDelay=0으로 컨텍스트 시작 직후 실행 => 개발시에는 불필요한 트래픽을 줄이기위해 사용x
      */
-    @Scheduled(initialDelay =10000000,fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
+    @Scheduled(initialDelay =0,fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
     public void runJob()
     {
         long started = System.currentTimeMillis();
@@ -38,6 +40,7 @@ public class YouthSupportScheduler {
         log.info("[YouthSupportScheduler] 대상 시군구 개수: {}", codes.size());
 
         ValueOperations<String, Object> ops = redisTemplate.opsForValue();
+        ValueOperations<String, SupportListDTO> listOps = listRedisTemplate.opsForValue();
 
         for(SigunguCodeDTO code : codes)
         {
@@ -51,7 +54,7 @@ public class YouthSupportScheduler {
 
                     ops.set(numKey,result.getTotCount(), Duration.ofDays(4));
 
-                    ops.set(baseKey,result.getDto(),Duration.ofDays(4));
+                    listOps.set(baseKey,result.getDto(),Duration.ofDays(4));
 
                     log.info("Cached: {} (totCount={})", baseKey, result.getTotCount());
                 }catch(Exception e){
