@@ -18,7 +18,7 @@ import java.util.Map;
 @Service
 public class SupportScoreService {
 
-    private static final String REDIS_KEY_PREFIX = "support:score";
+    private static final String REDIS_KEY_PREFIX = "support:score:";
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final SigunguRepository sigunguRepository;
