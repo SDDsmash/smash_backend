@@ -28,7 +28,7 @@ public class InfraBatchRunner {
         this.infraJob = infraJob;
         this.guard = guard;
         this.seedProperties = seedProperties;
-        this.SEED_VERSION = "v100";
+        this.SEED_VERSION = seedProperties.getVersion();
     }
 
     @Order(7)

@@ -13,13 +13,15 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+
 @Configuration
 public class RedisConfig {
     @Bean
     public RestTemplate restTemplate() {
         var factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(3000);
-        factory.setReadTimeout(5000);
+        factory.setConnectTimeout(Duration.ofSeconds(5));
+        factory.setReadTimeout(Duration.ofSeconds(25));
         return new RestTemplate(factory);
     }
 
