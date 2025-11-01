@@ -8,6 +8,9 @@ public enum ErrorCode {
     ADDRESS_CODE_NOT_FOUND("ADDRESS_CODE_NOT_FOUND", HttpStatus.NOT_FOUND),
     //end
 
+    // job
+    JOB_CODE_NOT_FOUND("JOB_CODE_NOT_FOUND", HttpStatus.NOT_FOUND),
+    //end
 
     // validation
     VALIDATION_FAILED("VALIDATION_FAILED", HttpStatus.BAD_REQUEST),
