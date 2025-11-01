@@ -56,7 +56,7 @@ public class SupportService {
 
         ValueOperations<String, Object> ops = redisTemplate.opsForValue();
 
-        String numKey = sigunguCode + ":" + tag.getValue() + "NUM";
+        String numKey = sigunguCode + ":" + tag.getValue() + ":" + "NUM";
         Object value = ops.get(numKey);
         if(value instanceof Number)
         {
