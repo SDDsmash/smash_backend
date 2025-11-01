@@ -2,21 +2,21 @@ package SDD.smash.Job.Repository;
 
 import SDD.smash.Job.Dto.JobCountDTO;
 import SDD.smash.Job.Dto.JobInfoDTO;
-import SDD.smash.Job.Entity.Job;
+import SDD.smash.Job.Entity.JobCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface JobRepository extends JpaRepository<Job, Long> {
+public interface JobCountRepository extends JpaRepository<JobCount, Long> {
 
     @Query("""
         SELECT new SDD.smash.Job.Dto.JobCountDTO(
         j.sigungu.sigunguCode,
         SUM(j.count)
         )
-        FROM Job j
+        FROM JobCount j
         GROUP BY j.sigungu.sigunguCode
     """)
     List<JobCountDTO> findAllTotalJobCount();
@@ -27,7 +27,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
         j.sigungu.sigunguCode,
         j.count
         )
-        FROM Job j
+        FROM JobCount j
         WHERE j.jobCodeMiddle.code = :middleCode
     """)
     List<JobCountDTO> findAllJobCode(@Param("middleCode") String middleCode);
@@ -37,7 +37,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
         SELECT new SDD.smash.Job.Dto.JobInfoDTO(
         SUM(j.count)
         )
-        FROM Job j
+        FROM JobCount j
         WHERE j.sigungu.sigunguCode = :sigunguCode
     """)
     JobInfoDTO findJobInfo(@Param("sigunguCode") String sigunguCode);
@@ -46,7 +46,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
         SELECT new SDD.smash.Job.Dto.JobInfoDTO(
         j.count
         )
-        FROM Job j
+        FROM JobCount j
         WHERE j.sigungu.sigunguCode = :sigunguCode
         AND j.jobCodeMiddle.code = :middleCode
     """)
