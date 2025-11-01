@@ -1,5 +1,7 @@
 package SDD.smash.Infra.Repository;
 
+import SDD.smash.Address.Entity.Sigungu;
+import SDD.smash.Infra.Entity.Industry;
 import SDD.smash.Infra.Dto.InfraDetails;
 import SDD.smash.Infra.Dto.InfraMajor;
 import SDD.smash.Infra.Entity.Infra;
@@ -9,11 +11,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface InfraRepository extends JpaRepository<Infra,Long> {
+    Optional<Infra> findBySigunguAndIndustry(Sigungu sigungu, Industry industry);
 
     @Query("""
     SELECT new SDD.smash.Infra.Dto.InfraMajor(

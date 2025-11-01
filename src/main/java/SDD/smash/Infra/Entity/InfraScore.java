@@ -16,9 +16,9 @@ public class InfraScore {
     @Column(name = "sigungu_code", length = 5)
     private String sigunguCode;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
     @MapsId
-    @JoinColumn(name = "sigungu_code")
+    @JoinColumn(name = "sigungu_code", nullable = false)
     private Sigungu sigungu;
 
     @Min(0)
