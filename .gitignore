@@ -16,8 +16,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-env.properties
-
+backend.env
 ### IntelliJ IDEA ###
 .idea
 *.iws
