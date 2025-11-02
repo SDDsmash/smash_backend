@@ -22,7 +22,6 @@ public class MetaDBConfig {
         return DataSourceBuilder.create().build();
     }
 
-    @Primary
     @Bean(name = "batchTransactionManager")
     public PlatformTransactionManager batchTransactionManager() {
 

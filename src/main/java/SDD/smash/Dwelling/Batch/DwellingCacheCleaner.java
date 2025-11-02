@@ -20,7 +20,7 @@ public class DwellingCacheCleaner implements JobExecutionListener {
     @Override
     public void beforeJob(JobExecution jobExecution) {
         log.info("Dwelling Redis 캐시 초기화 시작");
-        Set<String> keys = redisTemplate.keys("infra:score:*");
+        Set<String> keys = redisTemplate.keys("dwelling:score:*");
         if (keys != null && !keys.isEmpty()) {
             redisTemplate.delete(keys);
             log.info(" Redis 캐시 {}개 삭제 완료", keys.size());
