@@ -1,17 +1,11 @@
 package SDD.smash.Dwelling.Batch;
 
-import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SigunguRepository;
 import SDD.smash.Dwelling.Adapter.MolitAptRentAdapter;
 import SDD.smash.Dwelling.Dto.DwellingDTO;
 import SDD.smash.Dwelling.Dto.DwellingUpsertDTO;
 import SDD.smash.Dwelling.Dto.RentRecord;
-import SDD.smash.Dwelling.Entity.Dwelling;
-import SDD.smash.Dwelling.Repository.DwellingRepository;
 import SDD.smash.Exception.Exception.BusinessException;
-import SDD.smash.Infra.Dto.InfraScoreDTO;
-import SDD.smash.Infra.Dto.InfraScoreUpsertDTO;
-import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -24,7 +18,6 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.support.IteratorItemReader;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -120,7 +113,6 @@ public class DwellingBatch {
                 if (records.isEmpty()) {
                     log.warn("No records for sigungu={}, ym={}", work.sigunguCode(), ym);
                 }
-                log.info("sigungu = {}, ym = {}", work.sigunguCode(), ym);
                 all.addAll(records);
             }
 
@@ -167,8 +159,6 @@ public class DwellingBatch {
         return new JdbcBatchItemWriterBuilder<DwellingUpsertDTO>()
                 .dataSource(dataDataSource)
                 .sql(upsertSql)
-                // BeanPropertyItemSqlParameterSourceProvider 는 중첩 프로퍼티를 지원합니다.
-                // (:sigungu.sigunguCode 같이 dot path OK)
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .assertUpdates(false)
                 .build();
