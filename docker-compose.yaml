@@ -8,6 +8,8 @@ services:
       dockerfile: dev.Dockerfile
     ports:
       - '8080:8080'
+    volumes:
+        - "C:/Users/hyoun/OneDrive/Desktop/csvs:/app/csvs:ro"
     env_file:
       - ./backend.env
     depends_on:
