@@ -6,6 +6,7 @@ import SDD.smash.Address.Entity.Sido;
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SidoRepository;
 import SDD.smash.Address.Repository.SigunguRepository;
+import SDD.smash.Dwelling.Batch.DwellingCacheCleaner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -38,7 +39,8 @@ public class SigunguBatch {
     private final SidoRepository sidoRepository;
     private final SigunguRepository sigunguRepository;
 
-    public SigunguBatch(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager, SidoRepository sidoRepository, SigunguRepository sigunguRepository) {
+    public SigunguBatch(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager,
+                        SidoRepository sidoRepository, SigunguRepository sigunguRepository) {
         this.jobRepository = jobRepository;
         this.platformTransactionManager = platformTransactionManager;
         this.sidoRepository = sidoRepository;

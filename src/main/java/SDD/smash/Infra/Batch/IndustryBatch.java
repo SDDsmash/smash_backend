@@ -4,6 +4,7 @@ import SDD.smash.Infra.Converter.InfraConverter;
 import SDD.smash.Infra.Dto.IndustryDTO;
 import SDD.smash.Infra.Entity.Industry;
 import SDD.smash.Infra.Repository.IndustryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -23,16 +24,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 
 @Configuration
+@RequiredArgsConstructor
 public class IndustryBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final IndustryRepository industryRepository;
 
-    public IndustryBatch(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager, IndustryRepository industryRepository) {
-        this.jobRepository = jobRepository;
-        this.platformTransactionManager = platformTransactionManager;
-        this.industryRepository = industryRepository;
-    }
 
     @Value("${industry.filePath}")
     private String filePath;

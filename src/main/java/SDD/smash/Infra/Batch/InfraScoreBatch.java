@@ -41,6 +41,7 @@ public class InfraScoreBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final SigunguRepository sigunguRepository;
+    private final InfraCacheCleaner infraCacheCleaner;
     private final @Qualifier("dataDBSource") DataSource dataDataSource;
 
 
@@ -61,6 +62,7 @@ public class InfraScoreBatch {
     @Bean
     public Job infraScoreJob(){
         return new JobBuilder("infraScoreJob", jobRepository)
+                .listener(infraCacheCleaner)
                 .start(infraScoreStep())
                 .build();
     }

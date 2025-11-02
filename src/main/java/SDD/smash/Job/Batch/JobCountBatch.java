@@ -42,8 +42,9 @@ public class JobCountBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final JobCodeMiddleRepository jobCodeMiddleRepository;
-    private final @Qualifier("dataDBSource") DataSource dataDataSource;
     private final SigunguRepository sigunguRepository;
+    private final JobCacheCleaner jobCacheCleaner;
+    private final @Qualifier("dataDBSource") DataSource dataDataSource;
 
 
     private Set<String> sigunguCodeCache = null;
@@ -75,6 +76,7 @@ public class JobCountBatch {
     @Bean
     public Job jobCountJob(){
         return new JobBuilder("jobCountJob", jobRepository)
+                .listener(jobCacheCleaner)
                 .start(jobCountStep())
                 .build();
     }

@@ -5,6 +5,7 @@ import SDD.smash.Util.BatchGuard;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -17,15 +18,17 @@ import org.springframework.stereotype.Component;
 public class JobCountBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job jobCountJob;
+    private final JobExplorer jobExplorer;
     private final BatchGuard guard;
     private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
-    public JobCountBatchRunner(JobLauncher jobLauncher, @Qualifier("jobCountJob") Job jobCountJob,
+    public JobCountBatchRunner(JobLauncher jobLauncher, @Qualifier("jobCountJob") Job jobCountJob, JobExplorer jobExplorer,
                                BatchGuard guard, SeedProperties seedProperties) {
         this.jobLauncher = jobLauncher;
         this.jobCountJob = jobCountJob;
+        this.jobExplorer = jobExplorer;
         this.guard = guard;
         this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
@@ -34,6 +37,11 @@ public class JobCountBatchRunner {
     @EventListener(ApplicationReadyEvent.class)
     @Order(9)
     public void runjobCountJobAfterStartup() throws Exception {
+        if (!jobExplorer.findRunningJobExecutions("jobCountJob").isEmpty()) {
+            log.warn("jobCountJob is already running. Skip launching.");
+            return;
+        }
+
         if(guard.alreadyDone("jobCountJob",SEED_VERSION)){
             log.info("Already jobCountJob : " + SEED_VERSION );
             return;

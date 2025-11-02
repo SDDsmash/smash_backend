@@ -26,7 +26,6 @@ public class DataDBConfig {
     @Bean(name = "dataDBSource")
     @ConfigurationProperties(prefix = "spring.datasource-data")
     public DataSource dataDBSource() {
-
         return DataSourceBuilder.create().build();
     }
 
@@ -47,7 +46,8 @@ public class DataDBConfig {
         return em;
     }
 
-    @Bean
+    @Primary
+    @Bean(name = "dataTransactionManager")
     public PlatformTransactionManager dataTransactionManager() {
         // JPA를 위한 트랜잭션 매니저 생성
         JpaTransactionManager transactionManager = new JpaTransactionManager();

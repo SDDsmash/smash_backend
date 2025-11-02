@@ -7,6 +7,7 @@ import SDD.smash.Job.Entity.JobCodeMiddle;
 import SDD.smash.Job.Entity.JobCodeTop;
 import SDD.smash.Job.Repository.JobCodeMiddleRepository;
 import SDD.smash.Job.Repository.JobCodeTopRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -33,6 +34,7 @@ import static SDD.smash.Util.BatchTextUtil.normalize;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class JobCodeMiddleBatch {
 
     private final JobRepository jobRepository;
@@ -40,13 +42,6 @@ public class JobCodeMiddleBatch {
     private final JobCodeMiddleRepository jobCodeMiddleRepository;
     private final JobCodeTopRepository jobCodeTopRepository;
 
-
-    public JobCodeMiddleBatch(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager, JobCodeMiddleRepository jobCodeMiddleRepository, JobCodeTopRepository jobCodeTopRepository) {
-        this.jobRepository = jobRepository;
-        this.platformTransactionManager = platformTransactionManager;
-        this.jobCodeMiddleRepository = jobCodeMiddleRepository;
-        this.jobCodeTopRepository = jobCodeTopRepository;
-    }
 
     @Value("${jobCodeMiddle.filePath}")
     private String filePath;
@@ -112,6 +107,7 @@ public class JobCodeMiddleBatch {
         return dto -> {
             String jobCodeTop = addLeadingZero(normalize(dto.getUpstream()));
             JobCodeTop jct = resolveSido(jobCodeTop);
+
             if (jct == null) {
                 return null;
             }
