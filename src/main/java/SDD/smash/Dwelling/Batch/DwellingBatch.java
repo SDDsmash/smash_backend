@@ -52,11 +52,13 @@ public class DwellingBatch {
     private final PlatformTransactionManager platformTransactionManager;
     private final MolitAptRentAdapter adapter;
     private final SigunguRepository sigunguRepository;
+    private final DwellingCacheCleaner dwellingCacheCleaner;
     private final @Qualifier("dataDBSource") DataSource dataDataSource;
 
     @Bean
     public Job dwellingJob(Step dwellingStep) {
         return new JobBuilder("dwellingJob", jobRepository)
+                .listener(dwellingCacheCleaner)
                 .start(dwellingStep)
                 .build();
     }
