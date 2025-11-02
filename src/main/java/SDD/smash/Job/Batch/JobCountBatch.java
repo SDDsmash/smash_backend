@@ -83,7 +83,7 @@ public class JobCountBatch {
     public Step jobCountStep() {
 
         return new StepBuilder("jobCountStep", jobRepository)
-                .<JobCountCsvDTO, JobCountUpsertDTO> chunk(500, platformTransactionManager)
+                .<JobCountCsvDTO, JobCountUpsertDTO> chunk(1000, platformTransactionManager)
                 .reader(jobCountCsvReader())
                 .processor(jobCountCsvProcessor())
                 .writer(jobCountWriter())
