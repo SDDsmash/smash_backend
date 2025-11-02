@@ -73,11 +73,16 @@ public class MolitAptRentAdapter {
                     .build(true)
                     .toUriString();
         }
-
-        ResponseEntity<String> resp = restTemplate.getForEntity(finalUrl, String.class); // api 호출
-        String body = resp.getBody();
-        JsonNode jsonNode = parseJsonWithXmlFallback(resp.getHeaders().getContentType(), body);
-        return extractRecords(jsonNode);
+        try{
+            ResponseEntity<String> resp = restTemplate.getForEntity(finalUrl, String.class); // api 호출
+            String body = resp.getBody();
+            JsonNode jsonNode = parseJsonWithXmlFallback(resp.getHeaders().getContentType(), body);
+            return extractRecords(jsonNode);
+        } catch (Exception e){
+            log.error("[API ERROR] sigungu={}, ym={}, page={}, msg={}",
+                    sigunguCode, yearMonth, pageNo, e.getMessage(), e);
+            throw e; // rethrow → 배치 retry/fault-tolerant가 동작
+        }
 
     }
 

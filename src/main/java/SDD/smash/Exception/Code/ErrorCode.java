@@ -14,6 +14,7 @@ public enum ErrorCode {
 
     // dwelling
     PRICE_AMOUNT_NOT_VALID("PRICE_AMOUNT_NOT_VALID", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_YEARMONTH("NOT_FOUND_YEARMONTH", HttpStatus.NOT_FOUND),
     //end
 
     // validation
