@@ -1,6 +1,7 @@
 package SDD.smash.Security.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,14 @@ public class ApiRateLimitService {
     private static final String ZSET_PREFIX = "ip_rate";
     private static final String LOCK_PREFIX = "ip_lock";
 
-    private static final long WINDOW_SECONDS = 10;     // 윈도우 크기(초)
-    private static final long ALLOWED_COUNT  = 30;    // 허용할 횟수
-    private static final long LOCK_TTL_MS    = 60_000; // 락 TTL(ms)
+    @Value("${ratelimit.window-seconds:10}")
+    private long WINDOW_SECONDS; // 윈도우 크기(초)
+
+    @Value("${ratelimit.allowed-count:30}")
+    private long ALLOWED_COUNT;   // 허용할 횟수
+
+    @Value("${ratelimit.lock-ttl-ms:60000}")
+    private long LOCK_TTL_MS; // 락 TTL(ms)
 
     private static final String LUA = ""
             + "local zsetKey   = KEYS[1]\n"

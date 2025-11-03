@@ -64,6 +64,7 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
 
 
     /**
+     * 운영환경은 반드시 Nginx를 리버스 프록시로 사용한다고 가정함.
      * Nginx로 직접 들어온 IP(Nginx가 XFF에 추가한 값)
      */
     private String resolveIpThatConnectedToNginx(HttpServletRequest request)
