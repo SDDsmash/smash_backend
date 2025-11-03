@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +20,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 
 @EnableWebSecurity
 @Configuration
@@ -27,6 +27,7 @@ import static java.util.Collections.singletonList;
 public class SecurityConfig {
 
     private final ApiRateLimitService apiRateLimitService;
+    private final Environment env;
 
     @Value("${front_url}")
     private String[] frontUrl;
@@ -39,12 +40,21 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated() //기본 거부 정책 적용
-                );
-
+        if(isDevProfileActive())
+        {
+            http
+                    .authorizeHttpRequests((auth) -> auth
+                            .anyRequest().permitAll()
+                    );
+        }
+        else
+        {
+            http
+                    .authorizeHttpRequests((auth) -> auth
+                            .requestMatchers("/api/**").permitAll()
+                            .anyRequest().authenticated() //기본 거부 정책 적용
+                    );
+        }
 
         /**
          * csrf 보호 해제
@@ -78,8 +88,13 @@ public class SecurityConfig {
 
 
         http
-                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService, env), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    private boolean isDevProfileActive() {
+        return Arrays.stream(env.getActiveProfiles())
+                .anyMatch(p -> p.equalsIgnoreCase("dev"));
     }
 }
