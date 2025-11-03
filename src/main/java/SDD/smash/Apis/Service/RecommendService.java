@@ -16,6 +16,7 @@ import SDD.smash.Support.domain.SupportTag;
 import SDD.smash.Support.service.SupportScoreService;
 import SDD.smash.Support.service.SupportService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RecommendService {
@@ -60,6 +62,11 @@ public class RecommendService {
         int div = (supportTag == null) ? 3 : 4;
         for(CodeNameDTO dto : codeNames)
         {
+            String sidoCode = dto.getSidoCode();
+            // 서울-경기-인천 제외
+            if(sidoCode.equals("41") || sidoCode.equals("11") || sidoCode.equals("28")){
+                continue;
+            }
             String code = dto.getSigunguCode();
             Integer jobScore = jobScoreMap.getOrDefault(code, 0);
             Integer dwellingScore = dwellingScoreMap.getOrDefault(code, 0);
