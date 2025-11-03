@@ -16,6 +16,7 @@ import SDD.smash.Support.domain.SupportTag;
 import SDD.smash.Support.service.SupportScoreService;
 import SDD.smash.Support.service.SupportService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RecommendService {
@@ -60,6 +62,11 @@ public class RecommendService {
         int div = (supportTag == null) ? 3 : 4;
         for(CodeNameDTO dto : codeNames)
         {
+            String sidoCode = dto.getSidoCode();
+            // 서울-경기-인천 제외
+            if(sidoCode.equals("41") || sidoCode.equals("11") || sidoCode.equals("28")){
+                continue;
+            }
             String code = dto.getSigunguCode();
             Integer jobScore = jobScoreMap.getOrDefault(code, 0);
             Integer dwellingScore = dwellingScoreMap.getOrDefault(code, 0);
@@ -75,19 +82,20 @@ public class RecommendService {
         scores.sort((a,b) -> b.getScore().compareTo(a.getScore()));
 
         List<ScoreDTO> top10 = scores.size() > 10 ? scores.subList(0, 10) : scores;
-
         List<RecommendDTO> result = new ArrayList<>();
+        Integer maxScore = top10.get(0).getScore();
+
         for(ScoreDTO dto : top10)
         {
             String sigunguCode = dto.getSigunguCode();
-            Integer score = dto.getScore();
+            Integer finalScore = (int) Math.round(((double) dto.getScore() / maxScore) * 100);
 
             RecommendDTO rd = RecommendDTO.builder()
                     .sidoCode(dto.getSidoCode())
                     .sidoName(dto.getSidoName())
                     .sigunguCode(dto.getSigunguCode())
                     .sigunguName(dto.getSigunguName())
-                    .score(score)
+                    .score(finalScore)
 
                     .totalJobInfo(jobService.getJobInfoBySigungu(sigunguCode))
                     .fitJobInfo(jobService.getJobInfoBySigunguAndJobCode(sigunguCode, midJobCode)) //jobCode 없는 경우 null
