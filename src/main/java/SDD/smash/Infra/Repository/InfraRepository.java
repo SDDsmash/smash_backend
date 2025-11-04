@@ -37,7 +37,8 @@ public interface InfraRepository extends JpaRepository<Infra,Long> {
     SELECT new SDD.smash.Infra.Dto.InfraDetails(
         ind.major,
         ind.name,
-        i.count
+        i.count,
+        i.ratio
     )
     FROM Infra i
     JOIN i.industry ind
