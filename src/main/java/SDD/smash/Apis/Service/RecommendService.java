@@ -7,7 +7,6 @@ import SDD.smash.Apis.Dto.ScoreDTO;
 import SDD.smash.Dwelling.Entity.DwellingType;
 import SDD.smash.Dwelling.Service.DwellingScoreSerivce;
 import SDD.smash.Dwelling.Service.DwellingService;
-import SDD.smash.Infra.Entity.InfraImportance;
 import SDD.smash.Infra.Service.InfraScoreService;
 import SDD.smash.Infra.Service.InfraService;
 import SDD.smash.Job.Service.JobScoreService;
@@ -47,19 +46,23 @@ public class RecommendService {
             String midJobCode,
             DwellingType dwellingType, //필수
             Integer price, //필수
-            InfraImportance infraImportance //필수
+            Integer infraChoice //필수
     )
     {
         Map<String, Integer> jobScoreMap = jobScoreService.getJobScore(midJobCode);
         Map<String, Integer> dwellingScoreMap = dwellingScoreService.getDwellingScoreByType(dwellingType, price);
         Map<String, Integer> supportScoreMap = supportScoreService.getSupportScoresByTag(supportTag);
-        Map<String, Integer> infraScoreMap = infraScoreService.getInfraScoresByImportance(infraImportance);
+        Map<String, Integer> infraScoreMap = infraScoreService.getInfraScoresByChoice(infraChoice);
 
         List<CodeNameDTO> codeNames = sigunguRepository.findAllCodeNames();
 
         List<ScoreDTO> scores = new ArrayList<>();
 
-        int div = (supportTag == null) ? 3 : 4;
+        int div = 4;
+        if(supportTag == null) div--; //정책 선택 안 한 경우 점수 산정 제외
+        if(infraChoice == null || infraChoice == 0) div--; //인프라 선택 안 한 경우 점수 산정 제외
+
+
         for(CodeNameDTO dto : codeNames)
         {
             String sidoCode = dto.getSidoCode();
