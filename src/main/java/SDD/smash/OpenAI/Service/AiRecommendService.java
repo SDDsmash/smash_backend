@@ -1,7 +1,7 @@
 package SDD.smash.OpenAI.Service;
 
+import SDD.smash.Apis.Dto.RecommendAggregateResponse;
 import SDD.smash.Apis.Dto.RecommendDTO;
-import SDD.smash.Apis.Dto.RecommendResponseDTO;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.AiRecommendDTO;
@@ -32,7 +32,7 @@ public class AiRecommendService {
 
     }
 
-    public List<RecommendResponseDTO> summarize(List<RecommendDTO> recommendList){
+    public RecommendAggregateResponse summarize(List<RecommendDTO> recommendList){
         try{
             String json = objectMapper.writeValueAsString(recommendList);
 
@@ -79,7 +79,7 @@ public class AiRecommendService {
             AiRecommendDTO aiDto = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
             return AiConverter.toResponseList(recommendList, aiDto);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return AiConverter.toResponseList(recommendList,null);
         }
     }
 

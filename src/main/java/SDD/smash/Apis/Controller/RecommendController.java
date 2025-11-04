@@ -1,7 +1,7 @@
 package SDD.smash.Apis.Controller;
 
+import SDD.smash.Apis.Dto.RecommendAggregateResponse;
 import SDD.smash.Apis.Dto.RecommendDTO;
-import SDD.smash.Apis.Dto.RecommendResponseDTO;
 import SDD.smash.Apis.Service.RecommendService;
 import SDD.smash.Dwelling.Entity.DwellingType;
 import SDD.smash.Infra.Entity.InfraImportance;
@@ -29,7 +29,7 @@ public class RecommendController {
     private final AiRecommendService aiRecommendService;
 
     @GetMapping("/recommend")
-    public ResponseEntity<List<RecommendResponseDTO>> recommend(
+    public ResponseEntity<RecommendAggregateResponse> recommend(
             @RequestParam(name = "supportTag", required = false) SupportTag supportTag,
             @RequestParam(name = "midJobCode", required = false) String midJobCode,
             @RequestParam(name = "dwellingType", required = true) @NotNull(message = "주거 유형은 필수입니다.") DwellingType dwellingType,
@@ -38,13 +38,13 @@ public class RecommendController {
             @RequestParam(name = "aiUse", defaultValue = "false") boolean aiUse
             )
     {
-        List<RecommendDTO> recommend = recommendService.recommend(supportTag, midJobCode, dwellingType, price, infraImportance);
-        List<RecommendResponseDTO> responseDTO;
+        List<RecommendDTO> list = recommendService.recommend(supportTag, midJobCode, dwellingType, price, infraImportance);
+        RecommendAggregateResponse responseDTO;
         if(aiUse){
-            responseDTO = aiRecommendService.summarize(recommend);
+            responseDTO = aiRecommendService.summarize(list);
             return ResponseEntity.ok(responseDTO);
         }
-        responseDTO = AiConverter.toResponseList(recommend,null);
+        responseDTO = AiConverter.toResponseList(list,null);
         return ResponseEntity.ok(responseDTO);
     }
 }
