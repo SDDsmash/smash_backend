@@ -22,13 +22,16 @@ public class AiRecommendService {
     private final OpenAiClient openAiClient;
     private final ObjectMapper objectMapper;
     private final String MODEL;
+    private final Double TEMPERATURE;
 
 
     public AiRecommendService(OpenAiClient openAiClient, ObjectMapper objectMapper,
-                              @Value("${openai.model}") String model) {
+                              @Value("${openai.model}") String model,
+                              @Value("${openai.temperature}") Double temperature) {
         this.openAiClient = openAiClient;
         this.objectMapper = objectMapper;
         this.MODEL = model;
+        this.TEMPERATURE = temperature;
 
     }
 
@@ -70,7 +73,7 @@ public class AiRecommendService {
                 %s
                 """.formatted(json);
             OpenAiMessage user = new OpenAiMessage("user", userPrompt);
-            OpenAiRequest request = new OpenAiRequest(MODEL, List.of(system, user));
+            OpenAiRequest request = new OpenAiRequest(MODEL, List.of(system, user),TEMPERATURE);
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);
             String raw = response.getChoices().get(0).getMessage().getContent();

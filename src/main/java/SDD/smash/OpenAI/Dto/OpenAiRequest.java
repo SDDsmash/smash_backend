@@ -20,8 +20,13 @@ public class OpenAiRequest {
     @JsonProperty("messages")
     private List<OpenAiMessage> messages;
 
-    public OpenAiRequest(String model, List<OpenAiMessage> messages) {
+    @JsonProperty("temperature")
+    private Double temperature;
+
+    public OpenAiRequest(String model, List<OpenAiMessage> messages,
+                         Double temperature) {
         this.model = model;
         this.messages = messages;
+        this.temperature = temperature;
     }
 }
