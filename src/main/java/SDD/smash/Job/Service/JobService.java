@@ -65,7 +65,7 @@ public class JobService {
     private String generateUrl(String sigunguCode)
     {
         return BASE_URL + PATH
-                + "&region=" + sigunguCode
+                + "?region=" + sigunguCode
                 + "&resultCnt=10"
                 + "&pageIndex=1";
     }
