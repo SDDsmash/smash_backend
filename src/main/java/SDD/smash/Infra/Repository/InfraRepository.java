@@ -1,7 +1,5 @@
 package SDD.smash.Infra.Repository;
 
-import SDD.smash.Address.Entity.Sigungu;
-import SDD.smash.Infra.Entity.Industry;
 import SDD.smash.Infra.Dto.InfraDetails;
 import SDD.smash.Infra.Dto.InfraMajor;
 import SDD.smash.Infra.Entity.Infra;
@@ -17,7 +15,6 @@ import java.util.List;
 
 @Repository
 public interface InfraRepository extends JpaRepository<Infra,Long> {
-    Optional<Infra> findBySigunguAndIndustry(Sigungu sigungu, Industry industry);
 
     @Query("""
     SELECT new SDD.smash.Infra.Dto.InfraMajor(

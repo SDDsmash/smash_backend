@@ -19,7 +19,6 @@ public class SidoBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job SidoJob;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -28,7 +27,6 @@ public class SidoBatchRunner {
         this.jobLauncher = jobLauncher;
         SidoJob = sidoJob;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

@@ -18,7 +18,6 @@ public class JobCodeTopBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job jcTopJob;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -27,7 +26,6 @@ public class JobCodeTopBatchRunner {
         this.jobLauncher = jobLauncher;
         this.jcTopJob = jcTopJob;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

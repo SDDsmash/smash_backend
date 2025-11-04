@@ -18,7 +18,6 @@ public class SigunguBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job SigunguJob;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -27,7 +26,6 @@ public class SigunguBatchRunner {
         this.jobLauncher = jobLauncher;
         SigunguJob = sigunguJob;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

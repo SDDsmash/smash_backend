@@ -18,7 +18,6 @@ public class InfraBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job infraJob;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -27,7 +26,6 @@ public class InfraBatchRunner {
         this.jobLauncher = jobLauncher;
         this.infraJob = infraJob;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

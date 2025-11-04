@@ -20,7 +20,6 @@ public class JobCountBatchRunner {
     private final Job jobCountJob;
     private final JobExplorer jobExplorer;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -30,7 +29,6 @@ public class JobCountBatchRunner {
         this.jobCountJob = jobCountJob;
         this.jobExplorer = jobExplorer;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

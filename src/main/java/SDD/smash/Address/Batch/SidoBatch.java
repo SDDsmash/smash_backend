@@ -22,8 +22,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import static SDD.smash.Util.BatchTextUtil.addLeadingZero;
-import static SDD.smash.Util.BatchTextUtil.normalize;
 
 
 @Configuration

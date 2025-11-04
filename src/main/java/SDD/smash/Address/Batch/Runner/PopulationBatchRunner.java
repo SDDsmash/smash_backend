@@ -18,7 +18,6 @@ public class PopulationBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job PopulationJob;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -27,7 +26,6 @@ public class PopulationBatchRunner {
         this.jobLauncher = jobLauncher;
         PopulationJob = populationJob;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

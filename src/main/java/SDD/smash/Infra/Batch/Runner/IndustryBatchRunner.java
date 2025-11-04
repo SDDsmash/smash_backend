@@ -18,7 +18,6 @@ public class IndustryBatchRunner {
     private final JobLauncher jobLauncher;
     private final Job industryJob;
     private final BatchGuard guard;
-    private final SeedProperties seedProperties;
 
     private final String SEED_VERSION;
 
@@ -27,7 +26,6 @@ public class IndustryBatchRunner {
         this.jobLauncher = jobLauncher;
         this.industryJob = industryJob;
         this.guard = guard;
-        this.seedProperties = seedProperties;
         this.SEED_VERSION = seedProperties.getVersion();
     }
 

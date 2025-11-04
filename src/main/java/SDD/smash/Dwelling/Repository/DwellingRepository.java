@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface DwellingRepository extends JpaRepository<Dwelling,Long> {
-    Optional<Dwelling> findBySigungu_SigunguCode(String sigunguCode);
 
     @Query("""
     SELECT new SDD.smash.Dwelling.Dto.DwellingMonthDTO(

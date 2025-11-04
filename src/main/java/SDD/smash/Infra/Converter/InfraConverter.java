@@ -19,18 +19,4 @@ public class InfraConverter {
                 .major(Major.valueOf(normalize(dto.getMajor())))
                 .build();
     }
-    public static Infra infraToEntity(InfraDTO dto, Sigungu sigungu, Industry industry){
-        return Infra.builder()
-                .count(Integer.parseInt(normalize(dto.getCount())))
-                .sigungu(sigungu)
-                .industry(industry)
-                .ratio(dto.getRatio())
-                .build();
-    }
-    public static InfraScore infraScoreToEntity(InfraScoreDTO dto, Sigungu sigungu){
-        return InfraScore.builder()
-                .sigungu(sigungu)
-                .score(dto.getScore())
-                .build();
-    }
 }

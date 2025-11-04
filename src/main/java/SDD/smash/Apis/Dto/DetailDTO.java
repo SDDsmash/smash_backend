@@ -6,7 +6,6 @@ import SDD.smash.Job.Dto.JobInfoDTO;
 import SDD.smash.Support.dto.SupportListDTO;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 

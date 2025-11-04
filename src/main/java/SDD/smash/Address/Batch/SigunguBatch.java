@@ -6,7 +6,6 @@ import SDD.smash.Address.Entity.Sido;
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SidoRepository;
 import SDD.smash.Address.Repository.SigunguRepository;
-import SDD.smash.Dwelling.Batch.DwellingCacheCleaner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

@@ -93,23 +93,4 @@ public class SupportService {
         }
         return dto;
     }
-
-//    /**
-//     * 해당 시군구의 태그에 해당하는 정책 세부 정보 리스트 반환 (사용 가능성 없어 주석처리. 추후 제거)
-//     * 데이터가 없는 경우 null (!= 0)
-//     */
-//    public SupportListDTO getFitSupportList(String sigunguCode, SupportTag tag)
-//    {
-//        addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
-//
-//        ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-//
-//        String baseKey = sigunguCode + ":" + tag.getValue();
-//        Object value = ops.get(baseKey);
-//        if(value instanceof SupportListDTO)
-//        {
-//            return (SupportListDTO) value;
-//        }
-//        return null;
-//    }
 }
