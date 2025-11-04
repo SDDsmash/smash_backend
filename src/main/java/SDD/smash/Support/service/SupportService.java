@@ -50,21 +50,26 @@ public class SupportService {
      * 해당 시군구의 특정 태그의 정책 개수 반환
      * 정책정보가 없는 경우 null
      */
-    public Integer getFitSupportNum(String sigunguCode, SupportTag tag)
+    public Integer getFitSupportNum(String sigunguCode, Integer supportChoice)
     {
-        if(tag == null) return null;
+        if(supportChoice == null || supportChoice == 0) return null;
 
         addressVerifyService.checkSigunguCodeOrThrow(sigunguCode);
 
+        var selectedTags = SupportTag.fromChoiceMask(supportChoice);
         ValueOperations<String, Object> ops = redisTemplate.opsForValue();
 
-        String numKey = sigunguCode + ":" + tag.getValue() + ":" + "NUM";
-        Object value = ops.get(numKey);
-        if(value instanceof Number)
+        int sum = 0;
+        for(SupportTag tag : selectedTags)
         {
-            return ((Number)value).intValue();
+            String numKey = sigunguCode + ":" + tag.getValue() + ":" + "NUM";
+            Object value = ops.get(numKey);
+            if(value instanceof Number)
+            {
+                sum += ((Number)value).intValue();
+            }
         }
-        return null;
+        return sum;
     }
 
     /**
