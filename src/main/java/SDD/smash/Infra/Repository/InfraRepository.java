@@ -48,7 +48,7 @@ public interface InfraRepository extends JpaRepository<Infra,Long> {
 
     @Query("""
 
-            SELECT new SDD.smash.Infra.Dto.SigunguMajorSumDTO(
+            SELECT new SDD.smash.Infra.Dto.SigunguMajorAvgDTO(
             i.sigungu.sigunguCode,
             i.industry.major,
             AVG(i.score)
