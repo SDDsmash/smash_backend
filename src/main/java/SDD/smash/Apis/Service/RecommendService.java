@@ -11,7 +11,6 @@ import SDD.smash.Infra.Service.InfraScoreService;
 import SDD.smash.Infra.Service.InfraService;
 import SDD.smash.Job.Service.JobScoreService;
 import SDD.smash.Job.Service.JobService;
-import SDD.smash.Support.domain.SupportTag;
 import SDD.smash.Support.service.SupportScoreService;
 import SDD.smash.Support.service.SupportService;
 import lombok.RequiredArgsConstructor;
