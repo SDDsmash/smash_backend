@@ -1,6 +1,5 @@
 package SDD.smash.OpenAI.Service;
 
-import SDD.smash.Apis.Dto.DetailResponseDTO;
 import SDD.smash.Apis.Dto.RecommendDTO;
 import SDD.smash.Apis.Dto.RecommendResponseDTO;
 import SDD.smash.OpenAI.Client.OpenAiClient;
@@ -74,10 +73,10 @@ public class AiRecommendService {
             OpenAiResponse response = openAiClient.getChatCompletion(request);
             String raw = response.getChoices().get(0).getMessage().getContent();
             String jsonOnly = extractJson(raw);
-
+            if(jsonOnly == null){
+                return AiConverter.toResponseList(recommendList,null);
+            }
             AiRecommendDTO aiDto = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
-
-
             return AiConverter.toResponseList(recommendList, aiDto);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
