@@ -105,15 +105,17 @@ public class InfraBatch {
                 .delimited()
                 .delimiter(",")
                 .quoteCharacter('\0')
-                .names("sigungu_code", "industry_code","count","ratio")
+                .names("sigungu_code", "industry_code","count","ratio","score")
                 .fieldSetMapper(fieldSet -> {
                     String rawSigunguCode = normalize(fieldSet.readString(0));
                     String rawIndustryCode = normalize(fieldSet.readString(1));
                     String rawInfraName = normalize(fieldSet.readString(2));
                     BigDecimal rawRatio = new BigDecimal(normalize(fieldSet.readString(3)))
                             .setScale(2, RoundingMode.HALF_UP);
+                    BigDecimal rawScore = new BigDecimal(normalize(fieldSet.readString(4)))
+                            .setScale(2, RoundingMode.HALF_UP);
 
-                    return new InfraDTO(rawSigunguCode, rawIndustryCode, rawInfraName,rawRatio);
+                    return new InfraDTO(rawSigunguCode, rawIndustryCode, rawInfraName,rawRatio,rawScore);
                 })
                 .build();
     }
@@ -133,6 +135,7 @@ public class InfraBatch {
                     .industryCode(industryCode)
                     .count(dto.getCount())
                     .ratio(dto.getRatio())
+                    .score(dto.getScore())
                     .build();
         };
     }
@@ -140,8 +143,8 @@ public class InfraBatch {
     @Bean
     public JdbcBatchItemWriter<InfraUpsertDTO> infraWriter() {
         String upsertSql = """
-            INSERT INTO infra (sigungu_code, industry_code, count, ratio)
-            VALUES (:sigunguCode, :industryCode, :count, :ratio)
+            INSERT INTO infra (sigungu_code, industry_code, count, ratio, score)
+            VALUES (:sigunguCode, :industryCode, :count, :ratio, :score)
             ON DUPLICATE KEY UPDATE count = VALUES(count)
             """;
 

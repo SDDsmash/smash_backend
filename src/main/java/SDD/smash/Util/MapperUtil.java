@@ -29,4 +29,12 @@ public class MapperUtil {
         return null;
     }
 
+    public static String extractJson(String raw) {
+        int s = raw.indexOf('{');
+        int e = raw.lastIndexOf('}');
+        if (s == -1 || e == -1 || s > e) {
+            return null;
+        }
+        return raw.substring(s, e + 1).trim();
+    }
 }

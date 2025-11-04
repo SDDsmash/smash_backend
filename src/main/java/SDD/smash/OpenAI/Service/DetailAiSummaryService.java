@@ -3,7 +3,7 @@ package SDD.smash.OpenAI.Service;
 import SDD.smash.Apis.Dto.DetailDTO;
 import SDD.smash.Apis.Dto.DetailResponseDTO;
 import SDD.smash.OpenAI.Client.OpenAiClient;
-import SDD.smash.OpenAI.Converter.SummaryConverter;
+import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.OpenAiMessage;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
@@ -42,31 +42,38 @@ public class DetailAiSummaryService {
             );
 
             String userPrompt = """
-            아래는 특정 지역의 상세 데이터(JSON)입니다.
-            이 정보를 바탕으로 '사람이 이해하기 쉬운 한국어 요약'을 작성하세요.
-
-            작성 규칙:
-            - 한 문단 핵심 요약(한 줄)
-            - 장점(2~4개 불릿)
-            - 일자리/지원/주거/인프라 핵심 포인트 표(열: 항목 | 요약)
-            - 과장/추정 금지, 데이터 없는 사실 배제
-            - 상대점수/비율은 '상대 평가'임을 명시
-
-            [지역 상세 JSON]
-            ```json
-            %s
-            ```
-            """.formatted(json);
+                아래는 특정 지역의 상세 데이터(JSON)입니다.
+                이 정보를 바탕으로 사람이 읽기 쉬운 자연스러운 한국어 요약을 작성하세요.
+                
+                작성 규칙:
+                1) 마크다운 문법은 절대 사용하지 마세요.
+                   - 예: ```json, ```, `, *, -, +, #, |, [], (), **굵게**, *기울임*, [텍스트](링크), 1. 2. 3. 등
+                   - 마크다운 줄바꿈(두 칸 공백 후 개행: '  \\n')도 금지합니다. 일반 개행(\\n)만 사용하세요.
+                2) 출력은 오직 순수 텍스트입니다. 코드블록, 리스트, 표, 인용구, 링크, 헤딩 등은 포함하지 마세요.
+                3) 출력 구조:
+                   (1) 첫 문단: 핵심 요약 한 줄 (한 문장)
+                   (2) 다음 줄들: 장점 2~4개 (번호 사용: ①, ②, ③, ④)
+                   (3) 마지막 부분: 일자리/지원/주거/인프라 핵심 포인트 요약
+                       - 항목별로 '항목명: 내용' 형식으로 작성 (표/파이프(|) 사용 금지)
+                4) 과장/추정/감정 표현 금지. 데이터가 없는 사실은 배제하세요.
+                5) 상대점수·비율 등은 '상대 평가'임을 반드시 명시하세요.
+                
+                입력 JSON 데이터:
+                %s
+                """.formatted(json);
             OpenAiMessage user = new OpenAiMessage("user", userPrompt);
             OpenAiRequest request = new OpenAiRequest(MODEL, List.of(system, user));
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);
 
-            String aiSummaryContent = response.getChoices().get(0).getMessage().getContent();
+            String aiSummaryContent = response.getChoices().get(0).getMessage().getContent()
+                    .replaceAll(" {2,}\\n", "\n") // 공백 2개+개행 → 일반 개행
+                    .replaceAll("[ \t]+\\r?\\n", "\n") // 줄 끝 공백 제거
+                    .trim();
 
-            return SummaryConverter.toResponseDTO(dto, aiSummaryContent);
+            return AiConverter.toResponseDTO(dto, aiSummaryContent);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            return AiConverter.toResponseDTO(dto,null);
         }
     }
 }
