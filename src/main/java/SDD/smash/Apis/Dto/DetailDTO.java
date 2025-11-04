@@ -20,6 +20,8 @@ public class DetailDTO {
     private String sigunguCode;
     private String sigunguName;
 
+    private Integer population;
+
     // 일자리
     private JobInfoDTO totalJobInfo;
     private JobInfoDTO fitJobInfo;

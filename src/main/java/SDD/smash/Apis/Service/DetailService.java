@@ -2,6 +2,7 @@ package SDD.smash.Apis.Service;
 
 import SDD.smash.Address.Repository.SigunguRepository;
 import SDD.smash.Address.Service.AddressVerifyService;
+import SDD.smash.Address.Service.PopulationService;
 import SDD.smash.Apis.Dto.CodeNameDTO;
 import SDD.smash.Apis.Dto.DetailDTO;
 import SDD.smash.Dwelling.Service.DwellingService;
@@ -23,6 +24,7 @@ public class DetailService {
     private final DwellingService dwellingService;
     private final SupportService supportService;
     private final InfraService infraService;
+    private final PopulationService populationService;
 
     private final AddressVerifyService addressVerifyService;
     private final SigunguRepository sigunguRepository;
@@ -45,6 +47,8 @@ public class DetailService {
                 .sidoName(codeName.getSidoName())
                 .sigunguCode(codeName.getSigunguCode())
                 .sigunguName(codeName.getSigunguName())
+
+                .population(populationService.getPopulationBySigunguCode(sigunguCode))
 
                 .totalJobInfo(jobService.getJobInfoBySigungu(sigunguCode))
                 .fitJobInfo(jobService.getJobInfoBySigunguAndJobCode(sigunguCode, midJobCode))
