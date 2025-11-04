@@ -58,7 +58,11 @@ public class RecommendService {
 
         List<ScoreDTO> scores = new ArrayList<>();
 
-        int div = (supportTag == null) ? 3 : 4;
+        int div = 4;
+        if(supportTag == null) div--; //정책 선택 안 한 경우 점수 산정 제외
+        if(infraChoice == null || infraChoice == 0) div--; //인프라 선택 안 한 경우 점수 산정 제외
+
+
         for(CodeNameDTO dto : codeNames)
         {
             String sidoCode = dto.getSidoCode();
