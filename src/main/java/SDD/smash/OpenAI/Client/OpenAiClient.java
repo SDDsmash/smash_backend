@@ -1,6 +1,7 @@
 package SDD.smash.OpenAI.Client;
 
 
+import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+
+import static SDD.smash.Exception.Code.ErrorCode.OPENAI_TOKEN_EXPIRED;
 
 @Component
 @Slf4j
@@ -34,17 +37,16 @@ public class OpenAiClient {
      * */
     public OpenAiResponse getChatCompletion(OpenAiRequest requestDto) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);    // ✅ 반드시 JSON
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON)); // ✅ 응답도 JSON 기대
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.setBearerAuth(APIKEY);
-        ObjectMapper om = new ObjectMapper();
 
         HttpEntity<OpenAiRequest> entity = new HttpEntity<>(requestDto, headers);
 
         ResponseEntity<OpenAiResponse> res = restTemplate.postForEntity(
                 APIURL, entity, OpenAiResponse.class);
         if (!res.getStatusCode().is2xxSuccessful() || res.getBody() == null) {
-            throw new RuntimeException("OpenAI API 호출 실패: " + res.getStatusCode());
+            throw new BusinessException(OPENAI_TOKEN_EXPIRED, "토큰이 만료되었습니다.");
         }
         return res.getBody();
     }
