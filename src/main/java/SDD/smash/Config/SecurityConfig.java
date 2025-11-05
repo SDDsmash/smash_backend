@@ -32,6 +32,9 @@ public class SecurityConfig {
     @Value("${front_url}")
     private String[] frontUrl;
 
+    @Value("${ratelimit.secret}")
+    private String ipSecret;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -88,7 +91,7 @@ public class SecurityConfig {
 
 
         http
-                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService, env), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService, env, ipSecret), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

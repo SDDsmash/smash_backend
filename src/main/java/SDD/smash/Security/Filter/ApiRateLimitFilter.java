@@ -28,8 +28,7 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
 
     private final Environment env;
 
-    @Value("${ratelimit.secret}")
-    private String secret;
+    private final String secret;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
@@ -117,6 +116,10 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
         } catch (InvalidKeyException e)
         {
             log.error("[RateLimitFilter] IP 암호화 시크릿이 잘못되었습니다.");
+            return null;
+        } catch (Exception e)
+        {
+            log.error("[RateLimitFilter] IP 암호화 실패");
             return null;
         }
     }
