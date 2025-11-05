@@ -44,7 +44,8 @@ public class AiRecommendService {
             OpenAiMessage system = new OpenAiMessage(
                     "system",
                     "당신은 한국어로 간결하고 사실 기반으로 답하는 AI 비서입니다. " +
-                            "반환은 반드시 순수 JSON 하나의 객체만 출력하세요."
+                            "반환은 반드시 순수 JSON 하나의 객체만 출력하세요.",
+                    null
             );
 
             String userPrompt = """
@@ -72,7 +73,7 @@ public class AiRecommendService {
                 입력(JSON 배열):
                 %s
                 """.formatted(json);
-            OpenAiMessage user = new OpenAiMessage("user", userPrompt);
+            OpenAiMessage user = new OpenAiMessage("user", userPrompt, null);
             OpenAiRequest request = new OpenAiRequest(MODEL, List.of(system, user),TEMPERATURE);
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);

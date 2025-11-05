@@ -4,9 +4,7 @@ import SDD.smash.Apis.Dto.DetailDTO;
 import SDD.smash.Apis.Dto.DetailResponseDTO;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
-import SDD.smash.OpenAI.Dto.OpenAiMessage;
-import SDD.smash.OpenAI.Dto.OpenAiRequest;
-import SDD.smash.OpenAI.Dto.OpenAiResponse;
+import SDD.smash.OpenAI.Dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,20 +31,29 @@ public class DetailAiSummaryService {
     public DetailResponseDTO summarize(DetailDTO dto){
         try{
             String json = objectMapper.writeValueAsString(dto);
-
+            Tool extractedTool = extractedTool();
 
             // 1) system 메시지: 규칙/톤 지시
             OpenAiMessage system = new OpenAiMessage(
                     "system",
                             "모든 질문에는 친절한 AI 비서로서 답변해주세요." +
-                            "응답은 한국어로, 간결하고 사실 기반으로 작성하세요."
+                            "응답은 한국어로, 간결하고 사실 기반으로 작성하세요.",
+                    List.of(extractedTool)
             );
 
             String userPrompt = """
                 아래는 특정 지역의 상세 데이터(JSON)입니다.
                 이 정보를 바탕으로 사람이 읽기 쉬운 자연스러운 한국어 요약을 작성하세요.
                 이미 제공된 페이지에 구체적인 수치가 있으므로, 구체적인 수치를 표현할 필요는 없습니다.
-                또한 사용자가 해당 지역의 매력을 느낄 수 있는 해당 지역만의 특색이나 장점을 반영한 특징을 추가하세요.
+                사용자가 해당 지역의 매력을 느낄 수 있도록, 해당 지역 ‘고유 특색/장점’을 포함하되,
+                이는 반드시 웹 검색 결과(신뢰 가능한 출처 2개 이상)에 기반해야 한다.
+                만약 검색 결과가 부족하거나 신뢰할 만한 정보가 없을 경우, ‘근거 부족’과 같은 문구를 사용하지 말고,
+                일반적인 지역의 긍정적 특징이나 분위기 중심으로 자연스럽게 서술하세요.
+                
+                도구 사용 지시:
+                - web_search_preview 도구를 사용해 지역명과 함께 다음 범주를 우선 조회하세요: 축제/행사, 문화·자연 명소, 특산물/지역산업, 대학/연구기관, 공공 인프라나 도시정책의 차별점.
+                - 서로 다른 매체의 최근 기사 또는 공신력 있는 기관 자료를 최소 2건 확보하세요. 일치하거나 상호 보완되는 사실만 채택하세요.
+                - 모호하거나 상충되는 정보는 제외하고, 근거가 부족하면 ‘근거 부족으로 일반적 특성만 제공’ 원칙을 적용해 고유 특색/장점 문장을 쓰지 마세요.
 
                 작성 규칙:
                 1) 마크다운 문법은 절대 사용하지 마세요.
@@ -59,7 +66,8 @@ public class DetailAiSummaryService {
                 입력 JSON 데이터:
                 %s
                 """.formatted(json);
-            OpenAiMessage user = new OpenAiMessage("user", userPrompt);
+
+            OpenAiMessage user = new OpenAiMessage("user", userPrompt,List.of(extractedTool));
             OpenAiRequest request = new OpenAiRequest(MODEL, List.of(system, user), TEMPERATURE);
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);
@@ -73,5 +81,19 @@ public class DetailAiSummaryService {
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseDTO(dto,null);
         }
+    }
+
+    private static Tool extractedTool() {
+        UserLocation location = UserLocation.builder()
+                .type("approximate")
+                .country("KR")
+                .city("Seoul")
+                .region("Seoul")
+                .build();
+
+        return Tool.builder()
+                .type("web_search_preview")
+                .userLocation(location)
+                .build();
     }
 }

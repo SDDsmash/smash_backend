@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -18,8 +20,12 @@ public class OpenAiMessage {
     @JsonProperty("content")
     private String content;
 
-    public OpenAiMessage(String role, String content) {
+    @JsonProperty("tools")
+    private List<Tool> tools;
+
+    public OpenAiMessage(String role, String content, List<Tool> tools) {
         this.role = role;
         this.content = content;
+        this.tools = tools;
     }
 }
