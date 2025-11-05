@@ -31,8 +31,10 @@ public class YouthSupportScheduler {
     /**
      * 이후 3일 간격으로 반복 수행
      * initialDelay=0으로 컨텍스트 시작 직후 실행 => 개발시에는 불필요한 트래픽을 줄이기위해 사용x
+     * initialDelayString = (day1)으로 시작 후 1일 뒤 스케줄링 시작(개발용)
      */
-    @Scheduled(initialDelay =0,fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
+    @Scheduled(initialDelayString = "#{T(java.time.Duration).ofDays(1).toMillis()}",
+            fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
     public void runJob()
     {
         long started = System.currentTimeMillis();

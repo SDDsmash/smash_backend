@@ -55,6 +55,7 @@ public class SecurityConfig {
             http
                     .authorizeHttpRequests((auth) -> auth
                             .requestMatchers("/api/**").permitAll()
+                            .requestMatchers("/v3/api-docs/**","/swagger-ui/**", "/swagger-config/**").permitAll() //개발용임!!! 제출 시 반드시 제거!!!!!!!!!!
                             .anyRequest().authenticated() //기본 거부 정책 적용
                     );
         }
