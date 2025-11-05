@@ -3,8 +3,6 @@ package SDD.smash.Infra.Batch;
 
 import SDD.smash.Address.Entity.Sigungu;
 import SDD.smash.Address.Repository.SigunguRepository;
-import SDD.smash.Infra.Dto.InfraScoreDTO;
-import SDD.smash.Infra.Dto.InfraScoreUpsertDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

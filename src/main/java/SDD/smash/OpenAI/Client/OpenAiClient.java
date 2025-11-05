@@ -38,7 +38,6 @@ public class OpenAiClient {
         headers.setAccept(List.of(MediaType.APPLICATION_JSON)); // ✅ 응답도 JSON 기대
         headers.setBearerAuth(APIKEY);
         ObjectMapper om = new ObjectMapper();
-        log.info("req.body={}", om.writeValueAsString(requestDto));
 
         HttpEntity<OpenAiRequest> entity = new HttpEntity<>(requestDto, headers);
 

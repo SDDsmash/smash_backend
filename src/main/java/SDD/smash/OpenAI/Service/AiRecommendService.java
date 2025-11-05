@@ -10,6 +10,7 @@ import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import static SDD.smash.Util.MapperUtil.extractJson;
 
 @Service
+@Slf4j
 public class AiRecommendService {
     private final OpenAiClient openAiClient;
     private final ObjectMapper objectMapper;
@@ -94,6 +96,9 @@ public class AiRecommendService {
             return AiConverter.toResponseList(recommendList, aiDto);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseList(recommendList,null);
+        } catch (RuntimeException e){
+            log.warn("OpenAI API 호출 실패");
+            return AiConverter.toResponseList(recommendList, null);
         }
     }
 
