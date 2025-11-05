@@ -33,7 +33,7 @@ public class JobCountBatchRunner {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    @Order(9)
+    @Order(8)
     public void runjobCountJobAfterStartup() throws Exception {
         if (!jobExplorer.findRunningJobExecutions("jobCountJob").isEmpty()) {
             log.warn("jobCountJob is already running. Skip launching.");

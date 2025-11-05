@@ -13,14 +13,14 @@ import lombok.*;
 public class UserLocation {
 
     @JsonProperty("type")
-    private String type; // "approximate"
+    private String type;
 
     @JsonProperty("country")
-    private String country; // "KR"
+    private String country;
 
     @JsonProperty("city")
-    private String city; // "Seoul"
+    private String city;
 
     @JsonProperty("region")
-    private String region; // "Seoul"
+    private String region;
 }

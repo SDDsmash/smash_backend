@@ -7,14 +7,18 @@ import SDD.smash.Job.Dto.JobInfoDTO;
 import SDD.smash.Job.Repository.JobCodeMiddleRepository;
 import SDD.smash.Job.Repository.JobCountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class JobService {
 
-    private static final String BASE_URL = "https://work24.go.kr";
-    private static final String PATH = "/wk/a/b/1200/retriveDtlEmpSrchList.do";
+    @Value("${worknet.base-url}")
+    private String baseUrl;
+
+    @Value("${worknet.path}")
+    private String path;
 
     private final AddressVerifyService addressVerifyService;
 
@@ -64,7 +68,7 @@ public class JobService {
 
     private String generateUrl(String sigunguCode)
     {
-        return BASE_URL + PATH
+        return baseUrl + path
                 + "?region=" + sigunguCode
                 + "&resultCnt=10"
                 + "&pageIndex=1";
@@ -72,7 +76,7 @@ public class JobService {
 
     private String generateFitUrl(String sigunguCode, String JobMiddleCode)
     {
-        return BASE_URL + PATH
+        return baseUrl + path
                 + "?occupation=" + JobMiddleCode
                 + "&region=" + sigunguCode
                 + "&resultCnt=10"

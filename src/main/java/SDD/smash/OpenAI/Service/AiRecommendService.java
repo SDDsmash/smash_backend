@@ -2,6 +2,7 @@ package SDD.smash.OpenAI.Service;
 
 import SDD.smash.Apis.Dto.RecommendAggregateResponse;
 import SDD.smash.Apis.Dto.RecommendDTO;
+import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.AiRecommendDTO;
@@ -10,6 +11,7 @@ import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.List;
 import static SDD.smash.Util.MapperUtil.extractJson;
 
 @Service
+@Slf4j
 public class AiRecommendService {
     private final OpenAiClient openAiClient;
     private final ObjectMapper objectMapper;
@@ -40,7 +43,6 @@ public class AiRecommendService {
             String json = objectMapper.writeValueAsString(recommendList);
 
 
-            // 1) system 메시지: 규칙/톤 지시
             OpenAiMessage system = new OpenAiMessage(
                     "system",
                     "당신은 한국어로 간결하고 사실 기반으로 답하는 AI 비서입니다. " +
@@ -94,6 +96,9 @@ public class AiRecommendService {
             return AiConverter.toResponseList(recommendList, aiDto);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseList(recommendList,null);
+        } catch (BusinessException e){
+            log.warn("OpenAI API 호출 실패");
+            return AiConverter.toResponseList(recommendList, null);
         }
     }
 

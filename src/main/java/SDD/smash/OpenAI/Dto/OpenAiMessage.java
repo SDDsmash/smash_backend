@@ -13,7 +13,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenAiMessage {
 
-    // 메시지 역할 (user, assistant, system )
     @JsonProperty("role")
     private String role;
 

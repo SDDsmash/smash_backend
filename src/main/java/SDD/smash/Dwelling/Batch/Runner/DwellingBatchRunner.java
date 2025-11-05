@@ -36,7 +36,7 @@ public class DwellingBatchRunner {
         this.DEALYMD = dealymd;
     }
 
-    @Order(10)
+    @Order(9)
     @EventListener(ApplicationReadyEvent.class)
     public void runOnceAfterStartup() throws Exception {
         try{

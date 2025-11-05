@@ -2,17 +2,20 @@ package SDD.smash.OpenAI.Service;
 
 import SDD.smash.Apis.Dto.DetailDTO;
 import SDD.smash.Apis.Dto.DetailResponseDTO;
+import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class DetailAiSummaryService {
     private final OpenAiClient openAiClient;
     private final ObjectMapper objectMapper;
@@ -33,7 +36,6 @@ public class DetailAiSummaryService {
             String json = objectMapper.writeValueAsString(dto);
             Tool extractedTool = extractedTool();
 
-            // 1) system 메시지: 규칙/톤 지시
             OpenAiMessage system = new OpenAiMessage(
                     "system",
                             "모든 질문에는 친절한 AI 비서로서 답변해주세요." +
@@ -79,6 +81,9 @@ public class DetailAiSummaryService {
 
             return AiConverter.toResponseDTO(dto, aiSummaryContent);
         } catch (JsonProcessingException e) {
+            return AiConverter.toResponseDTO(dto,null);
+        } catch (BusinessException e){
+            log.warn("OpenAI API 호출 실패");
             return AiConverter.toResponseDTO(dto,null);
         }
     }

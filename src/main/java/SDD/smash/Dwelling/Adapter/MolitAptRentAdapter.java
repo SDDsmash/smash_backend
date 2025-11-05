@@ -55,8 +55,8 @@ public class MolitAptRentAdapter {
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(baseUrl)
                 .pathSegment(apiPath)
-                .queryParam("LAWD_CD", sigunguCode)  // 시군구 코드
-                .queryParam("DEAL_YMD", dealYmd)     // YYYYMM
+                .queryParam("LAWD_CD", sigunguCode)
+                .queryParam("DEAL_YMD", dealYmd)
                 .queryParam("pageNo", pageNo)
                 .queryParam("numOfRows", rows)
                 .queryParam("_type", "json");
@@ -89,13 +89,12 @@ public class MolitAptRentAdapter {
     private JsonNode parseJsonWithXmlFallback(@Nullable MediaType ct, String body) {
         try {
             if ((ct != null && MediaType.APPLICATION_JSON.includes(ct)) || looksLikeJson(body)) {
-                return objectMapper.readTree(body);  // json 파싱시도
+                return objectMapper.readTree(body);
             }
-            // XML → JSON 트리
             return xmlMapper.readTree(body.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.warn("parseJsonWithXmlFallback failed: {}", e.getMessage());
-            return objectMapper.createObjectNode();  // 빈 객체 반환
+            return objectMapper.createObjectNode();
         }
     }
 
