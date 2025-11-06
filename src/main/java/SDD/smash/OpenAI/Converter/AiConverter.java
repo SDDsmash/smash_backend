@@ -20,6 +20,7 @@ public class AiConverter {
                 .supportList(dto.getSupportList())
                 .dwellingInfo(dto.getDwellingInfo())
                 .infraDetails(dto.getInfraDetails())
+                .infraMajors(dto.getInfraMajors())
                 .aiSummary(summarizeContent)
                 .build();
     }

@@ -37,7 +37,7 @@ public class DetailDTO {
     //인프라
     private List<InfraDetails> infraDetails;
 
-    //주인프라 점수
+    //주 인프라 점수
     private List<InfraMajor> infraMajors;
 
 }

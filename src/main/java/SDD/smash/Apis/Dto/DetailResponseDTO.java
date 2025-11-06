@@ -2,6 +2,7 @@ package SDD.smash.Apis.Dto;
 
 import SDD.smash.Dwelling.Dto.DwellingInfoDTO;
 import SDD.smash.Infra.Dto.InfraDetails;
+import SDD.smash.Infra.Dto.InfraMajor;
 import SDD.smash.Job.Dto.JobInfoDTO;
 import SDD.smash.Support.dto.SupportListDTO;
 import lombok.Builder;
@@ -35,6 +36,9 @@ public class DetailResponseDTO {
 
     //인프라
     private List<InfraDetails> infraDetails;
+
+    //주인프라 점수
+    private List<InfraMajor> infraMajors;
 
     private String aiSummary;
 
