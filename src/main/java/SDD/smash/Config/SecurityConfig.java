@@ -74,7 +74,7 @@ public class SecurityConfig {
 
 
         http
-                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService, env, ipSecret), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new ApiRateLimitFilter(apiRateLimitService, ipSecret), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
