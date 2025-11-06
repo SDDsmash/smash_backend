@@ -5,6 +5,7 @@ import SDD.smash.Apis.Dto.RecommendDTO;
 import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
+import SDD.smash.OpenAI.Dto.AiPick;
 import SDD.smash.OpenAI.Dto.AiRecommendDTO;
 import SDD.smash.OpenAI.Dto.OpenAiMessage;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static SDD.smash.Util.MapperUtil.extractJson;
+import static SDD.smash.Util.OpenAiOutputSanitizerUtil.sanitize;
 
 @Service
 @Slf4j
@@ -92,8 +94,9 @@ public class AiRecommendService {
             if(jsonOnly == null){
                 return AiConverter.toResponseList(recommendList,null);
             }
-            AiRecommendDTO aiDto = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
-            return AiConverter.toResponseList(recommendList, aiDto);
+            AiRecommendDTO rawDTO = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
+            AiRecommendDTO aiDTO = sanitizeRecommendations(rawDTO);
+            return AiConverter.toResponseList(recommendList, aiDTO);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseList(recommendList,null);
         } catch (BusinessException e){
@@ -102,4 +105,18 @@ public class AiRecommendService {
         }
     }
 
+    private AiRecommendDTO sanitizeRecommendations(AiRecommendDTO dto) {
+        if (dto == null || dto.getRecommendations() == null) {
+            return dto;
+        }
+
+        return AiRecommendDTO.builder()
+                .recommendations(dto.getRecommendations().stream()
+                        .map(pick -> AiPick.builder()
+                                .sigunguCode(pick.getSigunguCode())
+                                .reason(sanitize(pick.getReason()))
+                                .build())
+                        .toList())
+                .build();
+    }
 }

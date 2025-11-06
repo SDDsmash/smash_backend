@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static SDD.smash.Util.OpenAiOutputSanitizerUtil.sanitize;
+
+
 @Service
 @Slf4j
 public class DetailAiSummaryService {
@@ -74,12 +77,14 @@ public class DetailAiSummaryService {
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);
 
-            String aiSummaryContent = response.getChoices().get(0).getMessage().getContent()
+            String aiSummaryRawContent = response.getChoices().get(0).getMessage().getContent()
                     .replaceAll(" {2,}\\n", "\n") // 공백 2개+개행 → 일반 개행
                     .replaceAll("[ \t]+\\r?\\n", "\n") // 줄 끝 공백 제거
                     .trim();
 
-            return AiConverter.toResponseDTO(dto, aiSummaryContent);
+            String sanitizedSummary = sanitize(aiSummaryRawContent);
+
+            return AiConverter.toResponseDTO(dto, sanitizedSummary);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseDTO(dto,null);
         } catch (BusinessException e){
