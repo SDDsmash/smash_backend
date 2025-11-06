@@ -10,7 +10,6 @@ import SDD.smash.OpenAI.Dto.AiRecommendDTO;
 import SDD.smash.OpenAI.Dto.OpenAiMessage;
 import SDD.smash.OpenAI.Dto.OpenAiRequest;
 import SDD.smash.OpenAI.Dto.OpenAiResponse;
-import SDD.smash.OpenAI.OpenAiOutputSanitizer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static SDD.smash.Util.MapperUtil.extractJson;
+import static SDD.smash.Util.OpenAiOutputSanitizerUtil.sanitize;
 
 @Service
 @Slf4j
@@ -94,9 +94,9 @@ public class AiRecommendService {
             if(jsonOnly == null){
                 return AiConverter.toResponseList(recommendList,null);
             }
-            AiRecommendDTO aiDto = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
-            AiRecommendDTO sanitizedDto = sanitizeRecommendations(aiDto);
-            return AiConverter.toResponseList(recommendList, sanitizedDto);
+            AiRecommendDTO rawDTO = objectMapper.readValue(jsonOnly, AiRecommendDTO.class);
+            AiRecommendDTO aiDTO = sanitizeRecommendations(rawDTO);
+            return AiConverter.toResponseList(recommendList, aiDTO);
         } catch (JsonProcessingException e) {
             return AiConverter.toResponseList(recommendList,null);
         } catch (BusinessException e){
@@ -105,16 +105,16 @@ public class AiRecommendService {
         }
     }
 
-    private AiRecommendDTO sanitizeRecommendations(AiRecommendDTO aiRecommendDTO) {
-        if (aiRecommendDTO == null || aiRecommendDTO.getRecommendations() == null) {
-            return aiRecommendDTO;
+    private AiRecommendDTO sanitizeRecommendations(AiRecommendDTO dto) {
+        if (dto == null || dto.getRecommendations() == null) {
+            return dto;
         }
 
         return AiRecommendDTO.builder()
-                .recommendations(aiRecommendDTO.getRecommendations().stream()
+                .recommendations(dto.getRecommendations().stream()
                         .map(pick -> AiPick.builder()
                                 .sigunguCode(pick.getSigunguCode())
-                                .reason(OpenAiOutputSanitizer.sanitize(pick.getReason()))
+                                .reason(sanitize(pick.getReason()))
                                 .build())
                         .toList())
                 .build();

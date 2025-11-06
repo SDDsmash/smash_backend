@@ -6,7 +6,6 @@ import SDD.smash.Exception.Exception.BusinessException;
 import SDD.smash.OpenAI.Client.OpenAiClient;
 import SDD.smash.OpenAI.Converter.AiConverter;
 import SDD.smash.OpenAI.Dto.*;
-import SDD.smash.OpenAI.OpenAiOutputSanitizer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static SDD.smash.Util.OpenAiOutputSanitizerUtil.sanitize;
+
 
 @Service
 @Slf4j
@@ -75,12 +77,12 @@ public class DetailAiSummaryService {
 
             OpenAiResponse response = openAiClient.getChatCompletion(request);
 
-            String aiSummaryContent = response.getChoices().get(0).getMessage().getContent()
+            String aiSummaryRawContent = response.getChoices().get(0).getMessage().getContent()
                     .replaceAll(" {2,}\\n", "\n") // 공백 2개+개행 → 일반 개행
                     .replaceAll("[ \t]+\\r?\\n", "\n") // 줄 끝 공백 제거
                     .trim();
 
-            String sanitizedSummary = OpenAiOutputSanitizer.sanitize(aiSummaryContent);
+            String sanitizedSummary = sanitize(aiSummaryRawContent);
 
             return AiConverter.toResponseDTO(dto, sanitizedSummary);
         } catch (JsonProcessingException e) {

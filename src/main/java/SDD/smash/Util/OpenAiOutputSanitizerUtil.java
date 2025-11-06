@@ -1,10 +1,10 @@
-package SDD.smash.OpenAI;
+package SDD.smash.Util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class OpenAiOutputSanitizer {
+public final class OpenAiOutputSanitizerUtil {
 
     public static String sanitize(String raw) {
         if (raw == null) {
