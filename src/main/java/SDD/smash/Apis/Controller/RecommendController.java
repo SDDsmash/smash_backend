@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class RecommendController {
 
     private final RecommendService recommendService;
@@ -38,6 +40,12 @@ public class RecommendController {
             @RequestParam(name = "aiUse", defaultValue = "false") boolean aiUse
             )
     {
+        try
+        {
+            log.info("[recommend] recommend 호출됨 sup={}, jobCode={}, dwellingType={}, price={},inf={}", supportChoice, midJobCode, dwellingType, price, infraChoice);
+        }catch(Exception e){
+
+        }
         List<RecommendDTO> list = recommendService.recommend(supportChoice, midJobCode, dwellingType, price, infraChoice);
         RecommendAggregateResponse responseDTO;
         if(aiUse){
