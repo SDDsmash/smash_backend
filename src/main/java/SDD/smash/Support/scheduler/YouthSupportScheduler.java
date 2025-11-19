@@ -33,7 +33,7 @@ public class YouthSupportScheduler {
      * initialDelay=0으로 컨텍스트 시작 직후 실행 => 개발시에는 불필요한 트래픽을 줄이기위해 사용x
      * initialDelayString = (day1)으로 시작 후 1일 뒤 스케줄링 시작(개발용)
      */
-    @Scheduled(initialDelayString = "#{T(java.time.Duration).ofDays(1).toMillis()}",
+    @Scheduled(initialDelay = 0,
             fixedDelayString = "#{T(java.time.Duration).ofDays(3).toMillis()}")
     public void runJob()
     {
@@ -54,9 +54,9 @@ public class YouthSupportScheduler {
                     String baseKey = code.getSigunguCode() + ":" + tag.getValue();
                     String numKey = baseKey + ":NUM";
 
-                    ops.set(numKey,result.getTotCount(), Duration.ofDays(4));
+                    ops.set(numKey,result.getTotCount(), Duration.ofDays(10));
 
-                    listOps.set(baseKey,result.getDto(),Duration.ofDays(4));
+                    listOps.set(baseKey,result.getDto(),Duration.ofDays(10));
 
                     log.info("Cached: {} (totCount={})", baseKey, result.getTotCount());
                 }catch(Exception e){
